@@ -19,23 +19,26 @@ public class XeroConnect {
     RestTemplate restTemplate = new RestTemplate();
     private final String xeroPaymentAPI = "https://api.xero.com/api.xro/2.0/Payments";
 
-    public String getTransactionURI(String idAtGateway, String chargebeeTxnId, LocalDate afterDate) {
-        String referenceID = "PG_ID%3A" + idAtGateway + "%20%7C%20CB_ID%3A" + chargebeeTxnId;
-        String queryParams = "?where%3DReference%3D%3D%22" + referenceID + "%22"
-                + "%20AND%20Date%3E"
-                + "DateTime(" + afterDate.getYear()
-                + "%2C%20" + afterDate.getMonthValue()
-                + "%2C%20" + afterDate.getDayOfMonth()
+    public String getTransactionURI(LocalDate startDate, LocalDate endDate) {
+        String queryParams = "?where%3D"
+                + "Date3E%3D"
+                + "DateTime(" + startDate.getYear()
+                + "%2C%20" + startDate.getMonthValue()
+                + "%2C%20" + startDate.getDayOfMonth()
+                + ")"
+                + "%20AND%20Date%3C%3D"
+                + "DateTime(" + endDate.getYear()
+                + "%2C%20" + endDate.getMonthValue()
+                + "%2C%20" + endDate.getDayOfMonth()
                 + ")";
 
         return xeroPaymentAPI + queryParams;
     }
 
-    public Transaction getTranscation(
+    public List<Transaction> getTranscations(
             XeroCredentials credentials,
-            String idAtGateway,
-            String chargebeeTxnId,
-            LocalDate afterDate) {
+            LocalDate startDate,
+            LocalDate endDate) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("xero-tenant-id", credentials.getXeroTenantId());
@@ -45,13 +48,13 @@ public class XeroConnect {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         // API to xero
-        String uri = getTransactionURI(idAtGateway, chargebeeTxnId, afterDate);
+        String uri = getTransactionURI(startDate, endDate);
         System.out.println("GET " + uri);
         String jsonResponse = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class).getBody();
 
         // Parse and Extract
         List<Transaction> xeroTransactions = ParseTransaction.xero(jsonResponse, "default");
 
-        return xeroTransactions.get(0);
+        return xeroTransactions;
     }
 }

@@ -32,10 +32,13 @@ class ReconciliationApplicationTests {
         XeroConnect conn = new XeroConnect();
         XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
 
-        LocalDate afterDate = LocalDate.of(2020, 3, 22);
+        LocalDate startDate = LocalDate.of(2020, 3, 22);
+        LocalDate endDate = LocalDate.now();
 
-        Transaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID, afterDate);
-        System.out.println(tr);
+        List<Transaction> transactions = conn.getTranscations(cred, startDate, endDate);
+        for (Transaction transaction: transactions) {
+            System.out.println(transaction);
+        }
     }
 
     @Test
