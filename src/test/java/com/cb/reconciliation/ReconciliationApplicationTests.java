@@ -1,9 +1,6 @@
 package com.cb.reconciliation;
 
-import com.cb.reconciliation.model.ChargebeeCredentials;
-import com.cb.reconciliation.model.StripeCredentials;
-import com.cb.reconciliation.model.Transaction;
-import com.cb.reconciliation.model.XeroCredentials;
+import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.service.ChargebeeConnect;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import com.cb.reconciliation.service.StripeConnect;
@@ -58,7 +55,7 @@ class ReconciliationApplicationTests {
         ChargebeeConnect conn = new ChargebeeConnect();
         List<Transaction> transactions;
 
-        transactions = conn.getTransactions(credentials, "stripe", startTimestamp, endTimestamp);
+        transactions = conn.getTransactionsByGateway(credentials, GatewayEnum.STRIPE, startTimestamp, endTimestamp);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
@@ -81,76 +78,92 @@ class ReconciliationApplicationTests {
         }
     }
 
+//    @Test
+//    void testCompareTransaction() throws Exception {
+//        LocalDate startDate = LocalDate.of(2020, 3, 11);
+//        LocalDate endDate = LocalDate.now();
+//        Timestamp startTimestamp = Timestamp.valueOf(startDate.atStartOfDay());
+//        Timestamp endTimestamp = Timestamp.valueOf(endDate.atStartOfDay());
+//
+//        // xero
+//        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
+//        String refreshToken = "3007b958b2a7b9bd3db1a30e19c06d70e6447f006ca3d2508495d915afb6b9b7";
+//        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
+//        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
+//
+//        XeroConnect xeroConn = new XeroConnect();
+//        XeroCredentials xeroCredentials = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
+//
+//        List<Transaction> accSoftTransactions = xeroConn.getTranscations(xeroCredentials, startDate, endDate);
+//
+//
+//
+//        // cb
+//        ChargebeeCredentials chargebeeCredentials = new ChargebeeCredentials("puneethintern-test",
+//                "test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
+//
+//        ChargebeeConnect ChargebeeConn = new ChargebeeConnect();
+//        List<Transaction> chargebeeTransactions = ChargebeeConn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTimestamp, endTimestamp);
+//
+//        // stripe
+//        StripeCredentials stripeCredentials = new StripeCredentials("sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc");
+//
+//        StripeConnect conn = new StripeConnect();
+//        List<Transaction> gatewayTransactions = conn.getTransactions(stripeCredentials, startTimestamp, endTimestamp);
+//
+//        System.out.println("Chargebee");
+//        System.out.println(chargebeeTransactions);
+//        System.out.println("Gateway");
+//        System.out.println(gatewayTransactions);
+//        System.out.println("Accounting Software");
+//        System.out.println(accSoftTransactions);
+//
+//        MismatchedTransactions computer = new MismatchedTransactions();
+//        Map<String, List<Transaction>> result = computer.compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
+//
+//        List<Transaction> matches = result.get("matches");
+//        List<Transaction> onlyInGateway = result.get("onlyInGateway");
+//        List<Transaction> onlyInAccSoft = result.get("onlyInAccSoft");
+//        List<Transaction> notInBoth = result.get("notInBoth");
+//
+//        System.out.println();
+//        System.out.println("Matches");
+//        System.out.println(matches);
+//
+//        System.out.println("onlyInGateway");
+//        System.out.println(onlyInGateway);
+//
+//        System.out.println("onlyInAccSoft");
+//        System.out.println(onlyInAccSoft);
+//
+//        System.out.println("notInBoth");
+//        System.out.println(notInBoth);
+//    }
+
     @Test
-    void testMismatched() throws Exception {
+    void mismatched() throws Exception {
         LocalDate startDate = LocalDate.of(2020, 3, 11);
         LocalDate endDate = LocalDate.now();
-        Timestamp startTimestamp = Timestamp.valueOf(startDate.atStartOfDay());
-        Timestamp endTimestamp = Timestamp.valueOf(endDate.atStartOfDay());
 
         // xero
         String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
-        String refreshToken = "d2af37d777234283ca684fe50e83bd344228e14c363ab7d654b9dadbb72d9e93";
+        String refreshToken = "861659c69b79e55ea6ac54eb43717a7e12c78c32a0ec88ef7f792e5b3868f297";
         String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
         String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
 
-        String idAtGateway = "ch_3KgVfHSEMRaUmSTA0wbseA5x";
-        String chargebeeTxnID = "txn_AzqYRgT0utm185Db";
-
-        XeroConnect xeroConn = new XeroConnect();
         XeroCredentials xeroCredentials = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
-
-        List<Transaction> accSoftTransactions = xeroConn.getTranscations(xeroCredentials, startDate, endDate);
-
-
-
-        // cb
-        ChargebeeCredentials chargebeeCredentials = new ChargebeeCredentials("puneethintern-test",
-                "test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
-
-        ChargebeeConnect ChargebeeConn = new ChargebeeConnect();
-        List<Transaction> chargebeeTransactions = ChargebeeConn.getTransactions(chargebeeCredentials, "stripe", startTimestamp, endTimestamp);
 
         // stripe
         StripeCredentials stripeCredentials = new StripeCredentials("sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc");
 
-        StripeConnect conn = new StripeConnect();
-        List<Transaction> gatewayTransactions = conn.getTransactions(stripeCredentials, startTimestamp, endTimestamp);
-
-        System.out.println("Chargebee");
-        System.out.println(chargebeeTransactions);
-        System.out.println("Gateway");
-        System.out.println(gatewayTransactions);
-        System.out.println("Accounting Software");
-        System.out.println(accSoftTransactions);
+        // chargebee
+        ChargebeeCredentials chargebeeCredentials = new ChargebeeCredentials("puneethintern-test",
+                "test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
 
         MismatchedTransactions computer = new MismatchedTransactions();
-        Map<String, List<Transaction>> result = computer.mismatched(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
 
-        List<Transaction> matches = result.get("matches");
-        List<Transaction> onlyInGateway = result.get("onlyInGateway");
-        List<Transaction> onlyInAccSoft = result.get("onlyInAccSoft");
-        List<Transaction> notInBoth = result.get("notInBoth");
-
-        System.out.println();
-        System.out.println("Matches");
-        System.out.println(matches);
-
-        System.out.println("onlyInGateway");
-        System.out.println(onlyInGateway);
-
-        System.out.println("onlyInAccSoft");
-        System.out.println(onlyInAccSoft);
-
-        System.out.println("notInBoth");
-        System.out.println(notInBoth);
-
-
-
-
-
-
-
-
+        List<GatewayEnum> gatewayEnumList = new ArrayList<>();
+        gatewayEnumList.add(GatewayEnum.STRIPE);
+        computer.mismatched(gatewayEnumList, chargebeeCredentials, stripeCredentials, xeroCredentials, startDate, endDate);
     }
 }

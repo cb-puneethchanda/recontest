@@ -1,26 +1,25 @@
 package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.ChargebeeCredentials;
+import com.cb.reconciliation.model.GatewayEnum;
 import com.cb.reconciliation.model.Transaction;
 import com.chargebee.Environment;
 import com.chargebee.ListResult;
 import com.chargebee.filters.enums.SortOrder;
-import com.chargebee.models.enums.Gateway;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ChargebeeConnect {
-    public List<Transaction> getTransactions(ChargebeeCredentials credentials, String gateway, Timestamp startDate, Timestamp endDate) throws Exception {
+    public List<Transaction> getTransactionsByGateway(ChargebeeCredentials credentials, GatewayEnum gatewayEnumType, Timestamp startDate, Timestamp endDate) throws Exception {
         // Choose Gateway
         com.chargebee.models.enums.Gateway gatewayEnumVal;
-        switch (gateway) {
-            case "stripe":
+        switch (gatewayEnumType) {
+            case STRIPE:
                 gatewayEnumVal = com.chargebee.models.enums.Gateway.STRIPE;
                 break;
             default:
