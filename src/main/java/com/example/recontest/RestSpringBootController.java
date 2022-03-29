@@ -1,5 +1,6 @@
 package com.example.recontest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -201,13 +202,14 @@ public class RestSpringBootController {
 	public String reconcile_xero(List<Transactions> lis) {
 	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTM5MjIsImV4cCI6MTY0ODU1NTcyMiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImY4MDJkNzc0MWU0NTRjMTdiMTJhYTUxN2M3NWUxNWY5IiwianRpIjoiMjBhZmQzOWEzMGVmMWUyZDBhY2NmNmE2OTMwYWUzN2IiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijg3YTFkZGM4LWEzZjgtNGUzMy04NGRjLTExNmVlYTc2MmE1MSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.nSic3XKrYExnKT_ZD-NnILndMRz0sPn1HRIcSvmeGw07O53o1npBt2yGRVAkxtBOS-XLjJt-7hln8IlWiKzxG3QnNErL0pRfgVSkGb1kDQAVVV1jXHT9EuEmEcpvMe8HsZVQIt5eb0xvagfabtvDSmjGChWDuz9bTiINN4Ew5zcpL79vwZFVzjccuFh7phq81R4CZjaM7jS9BYIG_3yEEIZBsNRp2mqSuNEixvzVQaRjNFpZJKp-B1MrBcsloNVyK5Tyca7yb7KxjqtCwCbTr5AYCPYTxy6I3JFFZGBz0dqAEpDuMwHzGXjOWTlnRaGfTi8nyeC7e7DxcQiAqz6p3g";
 	    String xero_tenant_id = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+		LocalDate afterDate = LocalDate.of(2020, 3, 22);
 	    XeroConnect conn = new XeroConnect();
 	    XeroCredentials cred = new XeroCredentials(access_token, xero_tenant_id);
 	    
 		for(Transactions k : lis) {
 			String idAtGateway = k.getPg_id();
 		    String chargebeeTxnID = k.getTxn_id();
-		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID);
+		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID, afterDate);
 		    System.out.println(chargebeeTxnID +":"+ tr.getAmount());
 	   
 		}
@@ -243,12 +245,13 @@ public class RestSpringBootController {
 	public Boolean reconcile_xero_id(Transactions k) {
 	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTM5MjIsImV4cCI6MTY0ODU1NTcyMiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImY4MDJkNzc0MWU0NTRjMTdiMTJhYTUxN2M3NWUxNWY5IiwianRpIjoiMjBhZmQzOWEzMGVmMWUyZDBhY2NmNmE2OTMwYWUzN2IiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijg3YTFkZGM4LWEzZjgtNGUzMy04NGRjLTExNmVlYTc2MmE1MSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.nSic3XKrYExnKT_ZD-NnILndMRz0sPn1HRIcSvmeGw07O53o1npBt2yGRVAkxtBOS-XLjJt-7hln8IlWiKzxG3QnNErL0pRfgVSkGb1kDQAVVV1jXHT9EuEmEcpvMe8HsZVQIt5eb0xvagfabtvDSmjGChWDuz9bTiINN4Ew5zcpL79vwZFVzjccuFh7phq81R4CZjaM7jS9BYIG_3yEEIZBsNRp2mqSuNEixvzVQaRjNFpZJKp-B1MrBcsloNVyK5Tyca7yb7KxjqtCwCbTr5AYCPYTxy6I3JFFZGBz0dqAEpDuMwHzGXjOWTlnRaGfTi8nyeC7e7DxcQiAqz6p3g";
 	    String xero_tenant_id = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+		LocalDate afterDate = LocalDate.of(2020, 3, 22);
 	    XeroConnect conn = new XeroConnect();
 	    XeroCredentials cred = new XeroCredentials(access_token, xero_tenant_id);
 	    
 			String idAtGateway = k.getPg_id();
 		    String chargebeeTxnID = k.getTxn_id();
-		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID);
+		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID, afterDate);
 		    if(tr!=null) {
 		    	return true;
 		    }
