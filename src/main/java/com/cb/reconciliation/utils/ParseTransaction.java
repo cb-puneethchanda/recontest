@@ -6,7 +6,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ public class ParseTransaction {
             // Date
             String dateFromJSON = (String) payment.get("Date");
             String epochString = dateFromJSON.split("[(]")[1].split("[+]")[0].trim();
-//            LocalDate date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDate();
             LocalDateTime date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
             Transaction transaction = new Transaction(id, date, amount, currencyCode);
