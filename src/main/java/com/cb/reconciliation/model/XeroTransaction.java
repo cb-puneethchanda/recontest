@@ -4,6 +4,7 @@ import lombok.Builder;
 import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 //@Builder
 public class XeroTransaction extends Transaction{
@@ -11,7 +12,7 @@ public class XeroTransaction extends Transaction{
         super(id);
     }
 
-    public XeroTransaction(String id, LocalDate date, double amount, String currencyCode) {
+    public XeroTransaction(String id, LocalDateTime date, double amount, String currencyCode) {
         super(id, date, amount, currencyCode);
     }
 

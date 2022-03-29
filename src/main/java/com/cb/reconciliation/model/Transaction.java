@@ -3,16 +3,17 @@ package com.cb.reconciliation.model;
 import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Transaction {
     protected String id;
-    protected LocalDate date;
+    protected LocalDateTime date;
     protected double amount;
 
     protected String currencyCode;
 
-    public Transaction(String id, LocalDate date, double amount, String currencyCode) {
+    public Transaction(String id, LocalDateTime date, double amount, String currencyCode) {
         this.id = id;
         this.date = date;
         this.amount = amount;
@@ -22,7 +23,7 @@ public class Transaction {
     public Transaction(String id) {
         this.id = id;
         this.amount = 100;
-        this.date = LocalDate.now();
+        this.date = LocalDateTime.now();
     }
 
     public String getCurrencyCode() {
@@ -33,11 +34,11 @@ public class Transaction {
         this.currencyCode = currencyCode;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

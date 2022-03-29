@@ -7,12 +7,12 @@ import org.json.simple.JSONValue;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParseTransaction {
-
     public static List<Transaction> xero(String payment, String version) {
         switch (version) {
             default:
@@ -39,10 +39,11 @@ public class ParseTransaction {
             // Date
             String dateFromJSON = (String) payment.get("Date");
             String epochString = dateFromJSON.split("[(]")[1].split("[+]")[0].trim();
-            LocalDate date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDate();
+//            LocalDate date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDateTime date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-            Transaction Transaction = new Transaction(id, date, amount, currencyCode);
-            transactions.add(Transaction);
+            Transaction transaction = new Transaction(id, date, amount, currencyCode);
+            transactions.add(transaction);
         }
         return transactions;
     }
