@@ -15,6 +15,11 @@ public class XeroCredentials {
     private String clientSecret;
     private String refreshToken;
     private String xeroTenantId;
+    private String accessToken = null;
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public String getClientId() {
         return clientId;
@@ -56,6 +61,13 @@ public class XeroCredentials {
     }
 
     public String getAccessToken() {
+        if (accessToken == null) {
+            refreshAccessToken();
+        }
+        return accessToken;
+    }
+
+    public void refreshAccessToken() {
         RestTemplate restTemplate = new RestTemplate();
 
         String refresh_token_endpoint = "https://identity.xero.com/connect/token";
@@ -77,7 +89,10 @@ public class XeroCredentials {
         String jsonResponse = restTemplate.exchange(refresh_token_endpoint, HttpMethod.POST, entity, String.class).getBody();
 
         JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonResponse);
-        String access_token = (String) jsonObject.get("access_token");
-        return access_token;
+        this.accessToken = (String) jsonObject.get("access_token");
+
+        System.out.println("XERO ACCESS TOKEN: " + accessToken);
     }
+
+
 }
