@@ -2,6 +2,7 @@ package com.example.recontest;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -280,12 +281,13 @@ public class RestSpringBootController {
 		return null;
 	}
 	@GetMapping("/cb_filter")
-	public List<Transactions> cb_txn_filter(){
+	public List<Transactions> cb_txn_filter(LocalDateTime startDate, LocalDateTime endDate){
 		Environment.configure("puneethintern-test","test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
 		ListResult result;
 		List<Transactions> lis = new ArrayList<>();
 		try {
 			result = Transaction.list()
+					.date().between(Timestamp.valueOf(startDate), Timestamp.valueOf(endDate))
 					.request();
 			for(ListResult.Entry entry:result) {
 				Transaction transaction = entry.transaction();
