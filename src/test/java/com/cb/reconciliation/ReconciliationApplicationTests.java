@@ -1,10 +1,13 @@
 package com.cb.reconciliation;
 
 import com.cb.reconciliation.model.ChargebeeCredentials;
+import com.cb.reconciliation.model.StripeCredentials;
 import com.cb.reconciliation.model.Transaction;
 import com.cb.reconciliation.model.XeroCredentials;
 import com.cb.reconciliation.service.ChargebeeConnect;
+import com.cb.reconciliation.service.StripeConnect;
 import com.cb.reconciliation.service.XeroConnect;
+import com.stripe.exception.StripeException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -32,8 +35,7 @@ class ReconciliationApplicationTests {
         XeroConnect conn = new XeroConnect();
         XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
 
-        LocalDate startDate = LocalDate.of(2020, 3, 22);
-        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = LocalDate.of(2020, 3, 22);LocalDate endDate = LocalDate.now();
 
         List<Transaction> transactions = conn.getTranscations(cred, startDate, endDate);
         for (Transaction transaction: transactions) {
@@ -52,9 +54,28 @@ class ReconciliationApplicationTests {
 
         ChargebeeConnect conn = new ChargebeeConnect();
         List<Transaction> transactions;
+
         transactions = conn.getTransactions(credentials, "stripe", startTimestamp, endTimestamp);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
+    }
+
+    @Test
+    void testStripe() throws StripeException {
+        StripeCredentials credentials = new StripeCredentials("sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc");
+        LocalDateTime startDate = LocalDateTime.of(2022, 3, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.now();
+        Timestamp startTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endTimestamp = Timestamp.valueOf(endDate);
+
+        StripeConnect conn = new StripeConnect();
+        List<Transaction> transactions;
+
+        transactions = conn.getTransactions(credentials, startTimestamp, endTimestamp);
+        for (Transaction transaction: transactions) {
+            System.out.println(transaction);
+        }
+
     }
 }
