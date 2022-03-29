@@ -170,12 +170,60 @@ public class RestSpringBootController {
     	
     }
     
+    public Boolean check_str_id(Transactions k){
+    	
+    	Stripe.apiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
+
+    	try {
+    		
+    			String id = k.getPg_id();
+    			Charge charge =
+    					  Charge.retrieve(id);
+    			System.out.println("Charge " + id + ":" + charge.getStatus().toString());
+    			
+    			if(charge!=null) {
+    				return true;
+    			}
+
+		} catch (StripeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+    	
+    	return false;
+    	
+    }
+    
 	@GetMapping("/reconcile_str")
 	public String reconcile() {
-		List<Transactions> lis = cb_txn();
-		check_str(lis);
-		reconcile_xero(lis);
-		return("Done!");
+		List<Transactions> lis_txn = cb_txn();
+		HashMap<String,List<Boolean>> lis = new HashMap<String,List<Boolean>>();
+		for(Transactions txn: lis_txn) {
+			lis.put(txn.getTxn_id(),Arrays.asList(reconcile_xero_id(txn),check_str_id(txn)));
+		}
+		
+//		check_str(lis);
+//		reconcile_xero(lis);
+		System.out.println(lis);
+		return("Done");
+	}
+	
+	
+//	@GetMapping("/reconcile_xero")
+	public Boolean reconcile_xero_id(Transactions k) {
+	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTM5MjIsImV4cCI6MTY0ODU1NTcyMiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4M";
+	    String xero_tenant_id = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+	    XeroConnect conn = new XeroConnect();
+	    XeroCredentials cred = new XeroCredentials(access_token, xero_tenant_id);
+	    
+			String idAtGateway = k.getPg_id();
+		    String chargebeeTxnID = k.getTxn_id();
+		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID);
+		    if(tr!=null) {
+		    	return true;
+		    }
+		return false;
 	}
 	
 //	@GetMapping("/reconcile_xero")
