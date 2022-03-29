@@ -1,5 +1,6 @@
 package com.example.recontest;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import com.example.recontest.models.XeroTransaction;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.ChargeCollection;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentIntentCollection;
 import com.stripe.net.RequestOptions;
@@ -257,6 +259,54 @@ public class RestSpringBootController {
 		    }
 		return false;
 	}
+	
+	
+	//pass unix integer timestamp
+	@GetMapping("/stripe_filter")
+	public List<Charge> Stripe_Date_Filter(Integer startDate, Integer endDate){ 
+		Stripe.apiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("created[gte]", startDate);
+		params.put("created[lte]", endDate);
+
+		try {
+			ChargeCollection charges = Charge.list(params);
+			return charges.getData();
+		} catch (StripeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@GetMapping("/cb_filter")
+	public List<Transactions> cb_txn_filter(){
+		Environment.configure("puneethintern-test","test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
+		ListResult result;
+		List<Transactions> lis = new ArrayList<>();
+		try {
+			result = Transaction.list()
+					.request();
+			for(ListResult.Entry entry:result) {
+				Transaction transaction = entry.transaction();
+				String id_At_gateway = transaction.idAtGateway();
+				String id = transaction.id();
+				String type = transaction.type().toString();
+				Transactions txn = new Transactions(id, id_At_gateway, type);
+				lis.add(txn);
+				//id_at_gatewya
+				//txn_id
+				//type  - refund- success
+			}
+			    return lis;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return lis;
+    }
+	
 	
 	//refunds - type.
 	//status check
