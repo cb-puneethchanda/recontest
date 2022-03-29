@@ -3,6 +3,7 @@ package com.cb.reconciliation.model;
 import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Transaction {
     protected String id;
@@ -16,6 +17,12 @@ public class Transaction {
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
+    }
+
+    public Transaction(String id) {
+        this.id = id;
+        this.amount = 100;
+        this.date = LocalDate.now();
     }
 
     public String getCurrencyCode() {
@@ -50,10 +57,14 @@ public class Transaction {
         this.id = id;
     }
 
-    public Transaction(String id) {
-        this.id = id;
-        this.amount = 100;
-        this.date = LocalDate.now();
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", date=" + date +
+                ", amount=" + amount +
+                ", currencyCode='" + currencyCode + '\'' +
+                '}';
     }
 
     public JSONObject toJSONObject() {
@@ -64,5 +75,18 @@ public class Transaction {
         jsonObject.put("date", this.getDate());
 
         return jsonObject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && Objects.equals(date, that.date) && Objects.equals(currencyCode, that.currencyCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date, amount, currencyCode);
     }
 }

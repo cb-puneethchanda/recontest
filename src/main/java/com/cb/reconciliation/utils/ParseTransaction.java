@@ -1,6 +1,6 @@
 package com.cb.reconciliation.utils;
 
-import com.cb.reconciliation.model.XeroTransaction;
+import com.cb.reconciliation.model.Transaction;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -13,18 +13,18 @@ import java.util.List;
 
 public class ParseTransaction {
 
-    public static List<XeroTransaction> xero(String payment, String version) {
+    public static List<Transaction> xero(String payment, String version) {
         switch (version) {
             default:
                 return xeroDefault(payment);
         }
     }
 
-    public static List<XeroTransaction> xeroDefault(String jsonIn) {
+    public static List<Transaction> xeroDefault(String jsonIn) {
         JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonIn);
         JSONArray payments = (JSONArray) jsonObject.get("Payments");
 
-        List<XeroTransaction> transactions = new ArrayList<XeroTransaction>();
+        List<Transaction> transactions = new ArrayList<Transaction>();
         for (int i = 0; i < payments.toArray().length; i++) {
             JSONObject payment = (JSONObject) payments.get(i);
 
@@ -41,8 +41,8 @@ public class ParseTransaction {
             String epochString = dateFromJSON.split("[(]")[1].split("[+]")[0].trim();
             LocalDate date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDate();
 
-            XeroTransaction xeroTransaction = new XeroTransaction(id, date, amount, currencyCode);
-            transactions.add(xeroTransaction);
+            Transaction Transaction = new Transaction(id, date, amount, currencyCode);
+            transactions.add(Transaction);
         }
         return transactions;
     }
