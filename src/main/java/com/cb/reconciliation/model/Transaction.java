@@ -83,7 +83,7 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return Double.compare(that.amount, amount) == 0 && id.equals(that.id) && Objects.equals(date, that.date) && Objects.equals(currencyCode, that.currencyCode);
+        return id.equals(that.id);
     }
 
     @Override
