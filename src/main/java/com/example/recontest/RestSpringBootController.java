@@ -172,15 +172,34 @@ public class RestSpringBootController {
     
 	@GetMapping("/reconcile_str")
 	public String reconcile() {
-		List<Transactions> lis = cb_txn();
-		check_str(lis);
-		reconcile_xero(lis);
-		return("Done!");
+		List<Transactions> lis_txn = cb_txn();
+		HashMap<String,List<Boolean>> lis = new HashMap<String,List<Boolean>>();
+		for(Transactions txn: lis_txn) {
+			lis.put(txn.getTxn_id(),Arrays.asList(reconcile_xero_id(txn),check_str_id(txn)));
+		}
+		int stripe = 0;
+		int xero = 0;
+		int match = 0;
+		for(Map.Entry<String,List<Boolean>> ele : lis.entrySet()) {
+			if(ele.getValue().get(0) == true) {
+				xero++;
+			}
+			if(ele.getValue().get(1) == true) {
+				stripe++;
+			}
+			if(ele.getValue().get(1) == true && ele.getValue().get(0) == true) {
+				match++;
+			}
+			
+		}
+		String ans = "Match " + match + ";" + "mismatch " + (lis.size()-match);
+//		System.out.println(lis);
+		return ans;
 	}
 	
 //	@GetMapping("/reconcile_xero")
 	public String reconcile_xero(List<Transactions> lis) {
-	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTExMzEsImV4cCI6MTY0ODU1MjkzMSwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImY4MDJkNzc0MWU0NTRjMTdiMTJhYTUxN2M3NWUxNWY5IiwianRpIjoiMjBhZmQzOWEzMGVmMWUyZDBhY2NmNmE2OTMwYWUzN2IiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijg3YTFkZGM4LWEzZjgtNGUzMy04NGRjLTExNmVlYTc2MmE1MSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.bhVDn1tZmct_gXysbyFIgGVp3aasiFS1qPH_IoK3BaFmPEAYh12QQH8hDFTUpYpGwKQcxK01Qj1z85EA4rc0dWaDqwa8DsNJEICiavu8O8-mZa2onkXKuKhzj6u96OOomVfcmfjEcpWmB4TQQF6S4zm2cCBkmEZtcdiXNDv15eD0UwGXyATOn1hYRDoFcj-iYC7a-1OtoriZOi2ZiA-2juU-j5u1OALmZFWT-uNaR4u5RYV-wWXBI7wvwj8AMi6KUNPwkh45ig15qCnSdsVxMj5u6i39SePwMfPZ_y63iU2pRrAWcnMwbimj4g7eN92g9pOeiRLiJomPz_2_-raUrw";
+	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTM5MjIsImV4cCI6MTY0ODU1NTcyMiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImY4MDJkNzc0MWU0NTRjMTdiMTJhYTUxN2M3NWUxNWY5IiwianRpIjoiMjBhZmQzOWEzMGVmMWUyZDBhY2NmNmE2OTMwYWUzN2IiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijg3YTFkZGM4LWEzZjgtNGUzMy04NGRjLTExNmVlYTc2MmE1MSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.nSic3XKrYExnKT_ZD-NnILndMRz0sPn1HRIcSvmeGw07O53o1npBt2yGRVAkxtBOS-XLjJt-7hln8IlWiKzxG3QnNErL0pRfgVSkGb1kDQAVVV1jXHT9EuEmEcpvMe8HsZVQIt5eb0xvagfabtvDSmjGChWDuz9bTiINN4Ew5zcpL79vwZFVzjccuFh7phq81R4CZjaM7jS9BYIG_3yEEIZBsNRp2mqSuNEixvzVQaRjNFpZJKp-B1MrBcsloNVyK5Tyca7yb7KxjqtCwCbTr5AYCPYTxy6I3JFFZGBz0dqAEpDuMwHzGXjOWTlnRaGfTi8nyeC7e7DxcQiAqz6p3g";
 	    String xero_tenant_id = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
 	    XeroConnect conn = new XeroConnect();
 	    XeroCredentials cred = new XeroCredentials(access_token, xero_tenant_id);
@@ -196,5 +215,48 @@ public class RestSpringBootController {
 		return("Done!");
 	}
 
+    public Boolean check_str_id(Transactions k){
+    	
+    	Stripe.apiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
+
+    	try {
+    		
+    			String id = k.getPg_id();
+    			Charge charge =
+    					  Charge.retrieve(id);
+//    			System.out.println("Charge " + id + ":" + charge.getStatus().toString());
+    			
+    			if(charge!=null && charge.getStatus().equals("succeeded")) {
+    				return true;
+    			}
+
+		} catch (StripeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+    	
+    	return false;
+    	
+    }
+    
+	public Boolean reconcile_xero_id(Transactions k) {
+	    String access_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg1NTM5MjIsImV4cCI6MTY0ODU1NTcyMiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODQ1ODc0MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImY4MDJkNzc0MWU0NTRjMTdiMTJhYTUxN2M3NWUxNWY5IiwianRpIjoiMjBhZmQzOWEzMGVmMWUyZDBhY2NmNmE2OTMwYWUzN2IiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijg3YTFkZGM4LWEzZjgtNGUzMy04NGRjLTExNmVlYTc2MmE1MSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.nSic3XKrYExnKT_ZD-NnILndMRz0sPn1HRIcSvmeGw07O53o1npBt2yGRVAkxtBOS-XLjJt-7hln8IlWiKzxG3QnNErL0pRfgVSkGb1kDQAVVV1jXHT9EuEmEcpvMe8HsZVQIt5eb0xvagfabtvDSmjGChWDuz9bTiINN4Ew5zcpL79vwZFVzjccuFh7phq81R4CZjaM7jS9BYIG_3yEEIZBsNRp2mqSuNEixvzVQaRjNFpZJKp-B1MrBcsloNVyK5Tyca7yb7KxjqtCwCbTr5AYCPYTxy6I3JFFZGBz0dqAEpDuMwHzGXjOWTlnRaGfTi8nyeC7e7DxcQiAqz6p3g";
+	    String xero_tenant_id = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+	    XeroConnect conn = new XeroConnect();
+	    XeroCredentials cred = new XeroCredentials(access_token, xero_tenant_id);
+	    
+			String idAtGateway = k.getPg_id();
+		    String chargebeeTxnID = k.getTxn_id();
+		    XeroTransaction tr = conn.getTranscation(cred, idAtGateway, chargebeeTxnID);
+		    if(tr!=null) {
+		    	return true;
+		    }
+		return false;
+	}
+	
+	//refunds - type.
+	//status check
+	//using refresh tokens.
 	
 }

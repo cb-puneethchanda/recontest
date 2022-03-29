@@ -33,7 +33,7 @@ public class XeroConnect {
 
         // API to xero
         String uri = getTransactionURI(idAtGateway, chargebeeTxnId);
-        System.out.println("GET " + uri);
+//        System.out.println("GET " + uri);
         String jsonResponse = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class).getBody();
 
         // Parse and Extract
