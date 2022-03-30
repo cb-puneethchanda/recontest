@@ -60,6 +60,11 @@ public class XeroCredentials extends AccSoftCredentials {
         this.xeroTenantId = xeroTenantId;
     }
 
+    public XeroCredentials(String xeroTenantId, String accessToken) {
+        this.xeroTenantId = xeroTenantId;
+        this.accessToken = accessToken;
+    }
+
     public String getAccessToken() {
         if (accessToken == null) {
             refreshAccessToken();
