@@ -61,6 +61,7 @@ public class MismatchedTransactions {
 
         for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
+//            com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
             List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(chargebeeCredentials, gatewayCredMap.getKey(), startTimestamp, endTimestamp);
 
             XeroConnect xeroConn = new XeroConnect();
@@ -70,7 +71,7 @@ public class MismatchedTransactions {
             switch (gatewayCredMap.getKey()) {
                 case STRIPE:
                     StripeConnect stripeConnect = new StripeConnect();
-                    gatewayTransactions = stripeConnect.getTransactions((StripeCredentials) gatewayCredMap.getValue(), startTimestamp, endTimestamp);
+                    gatewayTransactions = stripeConnect.getBalanceTransaction((StripeCredentials) gatewayCredMap.getValue(), startTimestamp, endTimestamp);
                     break;
             }
 

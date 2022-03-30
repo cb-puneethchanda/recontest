@@ -32,7 +32,7 @@ class ReconciliationApplicationTests {
 //        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
 
         String xeroTenantId = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
-        String refreshToken = "cc321ef14c9e54358d231bc1016c7844c4891f5a7821f056511ecc0f28698bd7";
+        String refreshToken = "2df0720cc487836ae71df3359681791f4b1d8482aa236230a61aafef3d9253c6";
         String clientId = "28B2CA27997343BAB89842D94CBFEF42";
         String clientSecret = "iiQjJ0De4pliVffxoRuJL5W8MeezAjyw_ziiFKxVVExsULk1";
 
@@ -58,6 +58,8 @@ class ReconciliationApplicationTests {
 
         ChargebeeConnect conn = new ChargebeeConnect();
         List<Transaction> transactions;
+        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
+//        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.PAYMENT;
 
         transactions = conn.getTransactionsByGateway(credentials, GatewayEnum.STRIPE, startTimestamp, endTimestamp);
         for (Transaction transaction: transactions) {
@@ -77,6 +79,40 @@ class ReconciliationApplicationTests {
         List<Transaction> transactions;
 
         transactions = conn.getTransactions(credentials, startTimestamp, endTimestamp);
+        for (Transaction transaction: transactions) {
+            System.out.println(transaction);
+        }
+    }
+
+    @Test
+    void testStripeRefund() throws StripeException {
+        StripeCredentials credentials = new StripeCredentials("sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc");
+        LocalDateTime startDate = LocalDateTime.of(2022, 3, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.now();
+        Timestamp startTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endTimestamp = Timestamp.valueOf(endDate);
+
+        StripeConnect conn = new StripeConnect();
+        List<Transaction> transactions;
+
+        transactions = conn.getRefunds(credentials, startTimestamp, endTimestamp);
+        for (Transaction transaction: transactions) {
+            System.out.println(transaction);
+        }
+    }
+
+    @Test
+    void testStripeBalanceTransaction() throws StripeException {
+        StripeCredentials credentials = new StripeCredentials("sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc");
+        LocalDateTime startDate = LocalDateTime.of(2022, 3, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.now();
+        Timestamp startTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endTimestamp = Timestamp.valueOf(endDate);
+
+        StripeConnect conn = new StripeConnect();
+        List<Transaction> transactions;
+
+        transactions = conn.getBalanceTransaction(credentials, startTimestamp, endTimestamp);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
@@ -156,7 +192,7 @@ class ReconciliationApplicationTests {
 //        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
 
         String xeroTenantId = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
-        String refreshToken = "cc321ef14c9e54358d231bc1016c7844c4891f5a7821f056511ecc0f28698bd7";
+        String refreshToken = "2df0720cc487836ae71df3359681791f4b1d8482aa236230a61aafef3d9253c6";
         String clientId = "28B2CA27997343BAB89842D94CBFEF42";
         String clientSecret = "iiQjJ0De4pliVffxoRuJL5W8MeezAjyw_ziiFKxVVExsULk1";
 
