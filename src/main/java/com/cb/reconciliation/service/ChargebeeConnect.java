@@ -46,6 +46,8 @@ public class ChargebeeConnect {
             Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
             transactions.add(tr);
         }
+//        System.out.println("CB");
+//        System.out.println(transactions);
         return transactions;
     }
 }

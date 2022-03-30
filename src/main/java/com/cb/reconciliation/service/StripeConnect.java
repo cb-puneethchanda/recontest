@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +39,15 @@ public class StripeConnect {
             double amount = charge.getAmount();
             String currencyCode = charge.getCurrency();
             long epochTime = charge.getCreated();
-            LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochTime), ZoneId.systemDefault());
+//            LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochTime), ZoneId.systemDefault());
+            LocalDateTime date = LocalDateTime.ofEpochSecond(epochTime, 0, ZoneOffset.UTC);
 
             Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
             transactions.add(tr);
 //            System.out.println(paymentIntent);
         }
+//        System.out.println("ST");
+        System.out.println(transactions);
         return transactions;
     }
 }

@@ -53,6 +53,8 @@ public class XeroConnect {
         // Parse and Extract
         List<Transaction> xeroTransactions = ParseTransaction.xero(jsonResponse, "default");
 
+//        System.out.println("X");
+        System.out.println(xeroTransactions);
         return xeroTransactions;
     }
 }

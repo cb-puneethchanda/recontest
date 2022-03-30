@@ -26,13 +26,15 @@ class ReconciliationApplicationTests {
 //    }
 
     @Test void testXero(){
-        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
-        String refreshToken = "d6e245efca29fce67af4e8a31024bb772b0295a2c26b5e7574e378bcb88c7617";
-        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
-        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
+//        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
+//        String refreshToken = "d6e245efca29fce67af4e8a31024bb772b0295a2c26b5e7574e378bcb88c7617";
+//        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
+//        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
 
-        String idAtGateway = "ch_3KgVfHSEMRaUmSTA0wbseA5x";
-        String chargebeeTxnID = "txn_AzqYRgT0utm185Db";
+        String xeroTenantId = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+        String refreshToken = "cc321ef14c9e54358d231bc1016c7844c4891f5a7821f056511ecc0f28698bd7";
+        String clientId = "28B2CA27997343BAB89842D94CBFEF42";
+        String clientSecret = "iiQjJ0De4pliVffxoRuJL5W8MeezAjyw_ziiFKxVVExsULk1";
 
         XeroConnect conn = new XeroConnect();
         XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
@@ -148,10 +150,15 @@ class ReconciliationApplicationTests {
         LocalDate endDate = LocalDate.now();
 
         // xero
-        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
-        String refreshToken = "9e943b0827a3fc9eb13717338bdaf8e659f25ba49b1c3d69412e0f15cdce5fb3";
-        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
-        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
+//        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
+//        String refreshToken = "9e943b0827a3fc9eb13717338bdaf8e659f25ba49b1c3d69412e0f15cdce5fb3";
+//        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
+//        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
+
+        String xeroTenantId = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
+        String refreshToken = "cc321ef14c9e54358d231bc1016c7844c4891f5a7821f056511ecc0f28698bd7";
+        String clientId = "28B2CA27997343BAB89842D94CBFEF42";
+        String clientSecret = "iiQjJ0De4pliVffxoRuJL5W8MeezAjyw_ziiFKxVVExsULk1";
 
         XeroCredentials xeroCredentials = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
 
