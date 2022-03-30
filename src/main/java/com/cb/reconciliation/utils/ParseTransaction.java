@@ -30,8 +30,8 @@ public class ParseTransaction {
 
             // Extract PG_ID from Reference
             String reference = (String) payment.get("Reference");
-            if (reference.equals("null")) {
-                System.out.println("XERO null id: " + payment);
+            if (reference == null || reference.equals("null")) {
+//                System.out.println("XERO null id: " + payment.get(i) + i + " " + payments.toArray().length);
                 continue;
             }
             String id = reference.split("[|]")[0].split("[:]")[1].trim();

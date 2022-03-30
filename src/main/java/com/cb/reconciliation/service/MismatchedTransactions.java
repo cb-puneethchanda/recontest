@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -53,19 +54,22 @@ public class MismatchedTransactions {
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
-            LocalDate startDate,
-            LocalDate endDate
+            LocalDateTime startDate,
+            LocalDateTime endDate
             ) throws Exception {
-        Timestamp startTimestamp = Timestamp.valueOf(startDate.atStartOfDay());
-        Timestamp endTimestamp = Timestamp.valueOf(endDate.atStartOfDay());
+        Timestamp startTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endTimestamp = Timestamp.valueOf(endDate);
 
         for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
-//            com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
-            List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(chargebeeCredentials, gatewayCredMap.getKey(), startTimestamp, endTimestamp);
+            List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
+                    chargebeeCredentials,
+                    gatewayCredMap.getKey(),
+                    startTimestamp,
+                    endTimestamp);
 
-            XeroConnect xeroConn = new XeroConnect();
-            List<Transaction> accSoftTransactions = xeroConn.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startDate, endDate);
+            XeroConnect xeroConnect = new XeroConnect();
+            List<Transaction> accSoftTransactions = xeroConnect.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startDate, endDate);
 
             List<Transaction> gatewayTransactions = null;
             switch (gatewayCredMap.getKey()) {

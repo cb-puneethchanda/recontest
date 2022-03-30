@@ -20,32 +20,19 @@ import java.util.Map;
 
 @SpringBootTest
 class ReconciliationApplicationTests {
-
-    //        String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
-//        String refreshToken = "d6e245efca29fce67af4e8a31024bb772b0295a2c26b5e7574e378bcb88c7617";
-//        String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
-//        String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
-
-//        String xeroTenantId = "9b3db3d6-ef3e-4335-b9ff-4edf5d34b19c";
-//        String refreshToken = "2df0720cc487836ae71df3359681791f4b1d8482aa236230a61aafef3d9253c6";
-//        String clientId = "28B2CA27997343BAB89842D94CBFEF42";
-//        String clientSecret = "iiQjJ0De4pliVffxoRuJL5W8MeezAjyw_ziiFKxVVExsULk1";
-
-    String xeroTenantId = "11fc848b-ac5c-43eb-8c35-39043cad93e7";
-    String refreshToken = "2df0720cc487836ae71df3359681791f4b1d8482aa236230a61aafef3d9253c6";
-    String clientId = "58AA430FE9794CF082C7D3632850BD46";
-    String clientSecret = "Op_Gd67qJMMXDkwUZ0lV58gFTB-klR7kEnbIDkTmSQVP7a6l";
-    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg2Mzg5MjYsImV4cCI6MTY0ODY0MDcyNiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiNThBQTQzMEZFOTc5NENGMDgyQzdEMzYzMjg1MEJENDYiLCJzdWIiOiI5MjVmYmEyZGNjZjI1MWEzOTEyMWUyZTg4M2I5OTk2NCIsImF1dGhfdGltZSI6MTY0ODYzODkwOSwieGVyb191c2VyaWQiOiI4ZTZhZDI1NS1jMDlkLTQzYmEtODY1NS0wYTcyYjY2MDRhOTciLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjhmNjc1OTlmYWUxYzQ5ZDFiNjJmOTE1ZGE4NTVhNGZlIiwianRpIjoiMzUzMjFlNTg1OGYyNzg1MjQ1YTAzZGRiZDQ0Nzg5ZjEiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjhiZDNiOTdhLTU2ZGMtNDgxMy1hOTg2LWRjMmQyMDc2OTg0ZSIsInNjb3BlIjpbImVtYWlsIiwicHJvZmlsZSIsIm9wZW5pZCIsImFjY291bnRpbmcuc2V0dGluZ3MiLCJhY2NvdW50aW5nLnRyYW5zYWN0aW9ucyIsImFjY291bnRpbmcuY29udGFjdHMiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl19.iR1EgaIrzO0W_jG2mbf6pURPx2PygUAerJ4SpSTbsDWRBd6j9ZhHf5MacvlhLEOVgYZCD-R7w-HiHJYIixV4uEdWqjaFT4lsTztYqAwDYgzvYbonDLGr_2kRgbDh7EV2_xJ4QBAV2YKcMNXA40M3f-vVKpMEcjtkGZU2Mh2cxeTlBwZKhY_3J_pVj_-1rWjQ97XEOsmnG8qC--B3Kh3g-GJaju3wRK-sXlCra0IEYei7xe2ujaZBUsUJNPvemWLJKDdhqQrvzpfzTH-zJKn-QptXUEz67wQJqmdgZUUAVpRernbk4X2WIqnDE4GTNU0nUAygwm6rSvJdMOldpOnCBw";
+    String xeroTenantId = "e39e9d62-44ae-4814-adbc-3b897c9b67bd";
+    String refreshToken = "";
+    String clientId = "";
+    String clientSecret = "";
+    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg2NTc2NzYsImV4cCI6MTY0ODY1OTQ3NiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODY1NzYzNywieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjU5ZDJiYjA4ODlmNzRjMDlhOGVmMzAzYjk2MmZkNTg2IiwianRpIjoiYmVjNjIxY2QyMDQ0YmE5NTQwYzQ5NGZjZWM1MTc5MzIiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijk4NTQ1ZmJhLWMyMmQtNGViYS1iNDMzLTRmOGVjNjc0ZjI4NyIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInNzbyJdfQ.ZmvmntQXhjoI0zYAb1fO9tt2kQF1z1yRCpGU5ZAWAZAhLFicq1MN3fWWUOzjOj_cHR1zrTMD8LhadkOfupPUTjhSaSk3ZbZkQeZ4PtLBREvAXLdEMwwqp7gFVT88VAoOwgKdarj01Iyav4V_dGJo2ytLG_7UUpDMhv92UvIKbygm9XK7JRXqvu5xDyIoSJwKLz9o6tuFykXADzdyS2xn_uKUYtoJk7uhWLqUmpsqqw_Q2JrFsztpumtoKuZt3nF3DwSW7zbqAQMTVgfDD4Rx9nbQB0Qc_FzQYwInbRMmZ7RObnEqlqKYL64jRc97qHGAsltP0Fs1zyw_hNkuvC6-Aw";
     // XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
     XeroCredentials xeroCredentials = new XeroCredentials(xeroTenantId, accessToken);
 
-    String chargebeeSiteUrl = "xaio-yan-test";
-    String chargebeeApiKey = "test_aPW2LccuW8AfjCUxnUl5ZXBlC7dG4UeXG";
+    String chargebeeSiteUrl = "reconciletest-test";
+    String chargebeeApiKey = "test_rBsnVbkoMt0ecuqSQlRfH1xYqe3qXBqrJ";
     ChargebeeCredentials chargebeeCredentials = new ChargebeeCredentials(chargebeeSiteUrl, chargebeeApiKey);
-    //        ChargebeeCredentials credentials = new ChargebeeCredentials("puneethintern-test",
-//                "test_PaDmUSQGN1Z0dRCkpdBZ1DLQPMf7jvZw");
 
-    String stripeApiKey = "sk_test_51Kgn4aSHg3lW4nFeGQTCtYFmp1ZGTUWIBSyuoTq0rQIxmfBScW1HLcUnnDw8I1Mae5Bo2WmLT89aHNeASzqa4OsL00Ww9J1pKt";
+    String stripeApiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
     StripeCredentials stripeCredentials = new StripeCredentials(stripeApiKey);
 
     LocalDateTime startDate = LocalDateTime.of(2022, 3, 22, 0, 0);
@@ -53,8 +40,6 @@ class ReconciliationApplicationTests {
 
     @Test void testXero(){
         XeroConnect conn = new XeroConnect();
-        LocalDate startDate = LocalDate.of(2020, 3, 22);LocalDate endDate = LocalDate.now();
-
         List<Transaction> transactions = conn.getTranscations(xeroCredentials, startDate, endDate);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
@@ -68,8 +53,7 @@ class ReconciliationApplicationTests {
 
         ChargebeeConnect conn = new ChargebeeConnect();
         List<Transaction> transactions;
-        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
-//        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.PAYMENT;
+//        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
 
         transactions = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTimestamp, endTimestamp);
         for (Transaction transaction: transactions) {
@@ -77,7 +61,7 @@ class ReconciliationApplicationTests {
         }
     }
 
-    @Test
+//    @Test
     void testStripe() throws StripeException {
         Timestamp startTimestamp = Timestamp.valueOf(startDate);
         Timestamp endTimestamp = Timestamp.valueOf(endDate);
@@ -91,7 +75,7 @@ class ReconciliationApplicationTests {
         }
     }
 
-    @Test
+//    @Test
     void testStripeRefund() throws StripeException {
         Timestamp startTimestamp = Timestamp.valueOf(startDate);
         Timestamp endTimestamp = Timestamp.valueOf(endDate);
@@ -129,6 +113,6 @@ class ReconciliationApplicationTests {
         Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
         accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
 
-        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate.toLocalDate(), endDate.toLocalDate());
+        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate, endDate);
     }
 }

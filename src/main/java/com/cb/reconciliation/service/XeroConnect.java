@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,8 +36,8 @@ public class XeroConnect {
 
     public List<Transaction> getTranscations(
             XeroCredentials credentials,
-            LocalDate startDate,
-            LocalDate endDate) {
+            LocalDateTime startDate,
+            LocalDateTime endDate) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("xero-tenant-id", credentials.getXeroTenantId());
@@ -46,7 +47,7 @@ public class XeroConnect {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         // API to xero
-        String uri = getTransactionURI(startDate, endDate);
+        String uri = getTransactionURI(startDate.toLocalDate(), endDate.toLocalDate());
         System.out.println("GET " + uri);
         String jsonResponse = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class).getBody();
 
@@ -54,7 +55,7 @@ public class XeroConnect {
         List<Transaction> xeroTransactions = ParseTransaction.xero(jsonResponse, "default");
 
 //        System.out.println("X");
-        System.out.println(xeroTransactions);
+//        System.out.println(xeroTransactions);
         return xeroTransactions;
     }
 }
