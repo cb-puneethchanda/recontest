@@ -10,7 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-public class XeroCredentials {
+public class XeroCredentials extends AccSoftCredentials {
     private String clientId;
     private String clientSecret;
     private String refreshToken;

@@ -1,10 +1,7 @@
 package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.*;
-import com.cb.reconciliation.model.credentials.ChargebeeCredentials;
-import com.cb.reconciliation.model.credentials.GatewayCredentials;
-import com.cb.reconciliation.model.credentials.StripeCredentials;
-import com.cb.reconciliation.model.credentials.XeroCredentials;
+import com.cb.reconciliation.model.credentials.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -55,7 +52,7 @@ public class MismatchedTransactions {
     public void mismatched(
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
-            XeroCredentials xeroCredentials,
+            Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
             LocalDate startDate,
             LocalDate endDate
             ) throws Exception {
@@ -67,7 +64,7 @@ public class MismatchedTransactions {
             List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(chargebeeCredentials, gatewayCredMap.getKey(), startTimestamp, endTimestamp);
 
             XeroConnect xeroConn = new XeroConnect();
-            List<Transaction> accSoftTransactions = xeroConn.getTranscations(xeroCredentials, startDate, endDate);
+            List<Transaction> accSoftTransactions = xeroConn.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startDate, endDate);
 
             List<Transaction> gatewayTransactions = null;
             switch (gatewayCredMap.getKey()) {

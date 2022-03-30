@@ -1,10 +1,7 @@
 package com.cb.reconciliation;
 
 import com.cb.reconciliation.model.*;
-import com.cb.reconciliation.model.credentials.ChargebeeCredentials;
-import com.cb.reconciliation.model.credentials.GatewayCredentials;
-import com.cb.reconciliation.model.credentials.StripeCredentials;
-import com.cb.reconciliation.model.credentials.XeroCredentials;
+import com.cb.reconciliation.model.credentials.*;
 import com.cb.reconciliation.service.ChargebeeConnect;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import com.cb.reconciliation.service.StripeConnect;
@@ -152,7 +149,7 @@ class ReconciliationApplicationTests {
 
         // xero
         String xeroTenantId = "8940aed6-420b-4a89-be09-a9c084f05702";
-        String refreshToken = "861659c69b79e55ea6ac54eb43717a7e12c78c32a0ec88ef7f792e5b3868f297";
+        String refreshToken = "9e943b0827a3fc9eb13717338bdaf8e659f25ba49b1c3d69412e0f15cdce5fb3";
         String clientId = "0A33E85DDDB74CA5A5D08A2A178A844A";
         String clientSecret = "H6e8vmVWfg73WeI7GQ1ZJupi0Eo4BeNW_TQxA6oMGEzpFUhl";
 
@@ -169,6 +166,10 @@ class ReconciliationApplicationTests {
 
         Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
         gatewayCredentialsMap.put(GatewayEnum.STRIPE, stripeCredentials);
-        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, xeroCredentials, startDate, endDate);
+
+        Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
+        accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
+
+        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate, endDate);
     }
 }
