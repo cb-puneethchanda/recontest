@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ParseTransaction {
     public static List<Transaction> xero(String payment, String version) {
@@ -29,6 +30,10 @@ public class ParseTransaction {
 
             // Extract PG_ID from Reference
             String reference = (String) payment.get("Reference");
+            if (reference.equals("null")) {
+                System.out.println("XERO null id: " + payment);
+                continue;
+            }
             String id = reference.split("[|]")[0].split("[:]")[1].trim();
             // Amount
             double amount = (double) payment.get("Amount");
