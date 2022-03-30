@@ -2,22 +2,36 @@ package com.cb.reconciliation.model;
 
 import org.json.simple.JSONObject;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class Transaction {
     protected String id;
     protected LocalDateTime date;
     protected double amount;
-
     protected String currencyCode;
+    protected String transactionType;
 
     public Transaction(String id, LocalDateTime date, double amount, String currencyCode) {
         this.id = id;
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String transactionType) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.currencyCode = currencyCode;
+        this.transactionType = transactionType;
     }
 
     public Transaction(String id) {
@@ -65,6 +79,7 @@ public class Transaction {
                 ", date=" + date +
                 ", amount=" + amount +
                 ", currencyCode='" + currencyCode + '\'' +
+                ", transactionType='" + transactionType + '\'' +
                 '}';
     }
 
@@ -74,6 +89,7 @@ public class Transaction {
         jsonObject.put("amount", this.getAmount());
         jsonObject.put("currencyCode", this.getCurrencyCode());
         jsonObject.put("date", this.getDate());
+        jsonObject.put("transactionType", this.getTransactionType());
 
         return jsonObject;
     }
@@ -86,8 +102,4 @@ public class Transaction {
         return id.equals(that.id);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, date, amount, currencyCode);
-    }
 }

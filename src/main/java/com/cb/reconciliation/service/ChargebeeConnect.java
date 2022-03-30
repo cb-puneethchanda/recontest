@@ -6,6 +6,7 @@ import com.cb.reconciliation.model.Transaction;
 import com.chargebee.Environment;
 import com.chargebee.ListResult;
 import com.chargebee.filters.enums.SortOrder;
+import com.sun.deploy.security.ValidationState;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -15,7 +16,13 @@ import java.util.List;
 
 @Service
 public class ChargebeeConnect {
-    public List<Transaction> getTransactionsByGateway(ChargebeeCredentials credentials, GatewayEnum gatewayEnumType, Timestamp startDate, Timestamp endDate) throws Exception {
+    public List<Transaction> getTransactionsByGateway(
+            ChargebeeCredentials credentials,
+            GatewayEnum gatewayEnumType,
+            Timestamp startDate,
+            Timestamp endDate
+//            com.chargebee.models.Transaction.Type transactionType
+            ) throws Exception {
         // Choose Gateway
         com.chargebee.models.enums.Gateway gatewayEnumVal;
         switch (gatewayEnumType) {
@@ -33,6 +40,7 @@ public class ChargebeeConnect {
                 .date().between(startDate, endDate)
                 .gateway().is(gatewayEnumVal)
                 .sortByDate(SortOrder.DESC)
+//                .type().is(transactionType)
                 .request();
 
         List<Transaction> transactions = new ArrayList<>();
@@ -43,7 +51,15 @@ public class ChargebeeConnect {
             String currencyCode = cb_transaction.currencyCode();
             LocalDateTime date = cb_transaction.date().toLocalDateTime();
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
+            com.chargebee.models.Transaction.Type type = cb_transaction.type();
+            String transactionType = null;
+            if (type == com.chargebee.models.Transaction.Type.PAYMENT) {
+                transactionType = "payment";
+            } else if (type == com.chargebee.models.Transaction.Type.REFUND) {
+                transactionType = "refund";
+            }
+
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, transactionType);
             transactions.add(tr);
         }
 //        System.out.println("CB");
