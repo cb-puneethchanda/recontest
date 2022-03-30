@@ -1,6 +1,10 @@
 package com.cb.reconciliation;
 
 import com.cb.reconciliation.model.*;
+import com.cb.reconciliation.model.credentials.ChargebeeCredentials;
+import com.cb.reconciliation.model.credentials.GatewayCredentials;
+import com.cb.reconciliation.model.credentials.StripeCredentials;
+import com.cb.reconciliation.model.credentials.XeroCredentials;
 import com.cb.reconciliation.service.ChargebeeConnect;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import com.cb.reconciliation.service.StripeConnect;
@@ -13,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -162,8 +167,8 @@ class ReconciliationApplicationTests {
 
         MismatchedTransactions computer = new MismatchedTransactions();
 
-        List<GatewayEnum> gatewayEnumList = new ArrayList<>();
-        gatewayEnumList.add(GatewayEnum.STRIPE);
-        computer.mismatched(gatewayEnumList, chargebeeCredentials, stripeCredentials, xeroCredentials, startDate, endDate);
+        Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
+        gatewayCredentialsMap.put(GatewayEnum.STRIPE, stripeCredentials);
+        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, xeroCredentials, startDate, endDate);
     }
 }

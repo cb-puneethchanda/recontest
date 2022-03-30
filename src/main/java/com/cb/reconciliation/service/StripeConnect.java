@@ -1,6 +1,6 @@
 package com.cb.reconciliation.service;
 
-import com.cb.reconciliation.model.StripeCredentials;
+import com.cb.reconciliation.model.credentials.StripeCredentials;
 import com.cb.reconciliation.model.Transaction;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;

@@ -1,12 +1,14 @@
 package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.*;
+import com.cb.reconciliation.model.credentials.ChargebeeCredentials;
+import com.cb.reconciliation.model.credentials.GatewayCredentials;
+import com.cb.reconciliation.model.credentials.StripeCredentials;
+import com.cb.reconciliation.model.credentials.XeroCredentials;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,9 +53,8 @@ public class MismatchedTransactions {
     }
 
     public void mismatched(
-            List<GatewayEnum> gatewayEnumList,
             ChargebeeCredentials chargebeeCredentials,
-            StripeCredentials stripeCredentials,
+            Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             XeroCredentials xeroCredentials,
             LocalDate startDate,
             LocalDate endDate
@@ -61,18 +62,22 @@ public class MismatchedTransactions {
         Timestamp startTimestamp = Timestamp.valueOf(startDate.atStartOfDay());
         Timestamp endTimestamp = Timestamp.valueOf(endDate.atStartOfDay());
 
-        for (GatewayEnum gatewayEnumVal: gatewayEnumList) {
+        for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
-            List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(chargebeeCredentials, gatewayEnumVal, startTimestamp, endTimestamp);
+            List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(chargebeeCredentials, gatewayCredMap.getKey(), startTimestamp, endTimestamp);
 
             XeroConnect xeroConn = new XeroConnect();
             List<Transaction> accSoftTransactions = xeroConn.getTranscations(xeroCredentials, startDate, endDate);
 
-            StripeConnect stripeConnect = new StripeConnect();
-            List<Transaction> gatewayTransactions = stripeConnect.getTransactions(stripeCredentials, startTimestamp, endTimestamp);
+            List<Transaction> gatewayTransactions = null;
+            switch (gatewayCredMap.getKey()) {
+                case STRIPE:
+                    StripeConnect stripeConnect = new StripeConnect();
+                    gatewayTransactions = stripeConnect.getTransactions((StripeCredentials) gatewayCredMap.getValue(), startTimestamp, endTimestamp);
+                    break;
+            }
 
             ComparedTransactions comparedTransactions = compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
-
             System.out.println(comparedTransactions);
         }
     }

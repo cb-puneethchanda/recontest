@@ -1,4 +1,4 @@
-package com.cb.reconciliation.model;
+package com.cb.reconciliation.model.credentials;
 
 public class ChargebeeCredentials {
     private String siteName;

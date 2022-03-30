@@ -1,4 +1,4 @@
-package com.cb.reconciliation.model;
+package com.cb.reconciliation.model.credentials;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;

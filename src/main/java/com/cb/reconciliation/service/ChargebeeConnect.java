@@ -1,6 +1,6 @@
 package com.cb.reconciliation.service;
 
-import com.cb.reconciliation.model.ChargebeeCredentials;
+import com.cb.reconciliation.model.credentials.ChargebeeCredentials;
 import com.cb.reconciliation.model.GatewayEnum;
 import com.cb.reconciliation.model.Transaction;
 import com.chargebee.Environment;

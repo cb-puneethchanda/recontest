@@ -1,10 +1,8 @@
 package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.Transaction;
-import com.cb.reconciliation.model.XeroCredentials;
+import com.cb.reconciliation.model.credentials.XeroCredentials;
 import com.cb.reconciliation.utils.ParseTransaction;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

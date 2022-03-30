@@ -1,6 +1,6 @@
-package com.cb.reconciliation.model;
+package com.cb.reconciliation.model.credentials;
 
-public class StripeCredentials {
+public class StripeCredentials extends GatewayCredentials{
     private String apiKey;
 
     public String getApiKey() {
