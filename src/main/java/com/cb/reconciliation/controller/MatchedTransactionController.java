@@ -4,14 +4,18 @@ import com.cb.reconciliation.model.AccSoftEnum;
 import com.cb.reconciliation.model.GatewayEnum;
 import com.cb.reconciliation.model.Transaction;
 import com.cb.reconciliation.model.credentials.*;
+import com.cb.reconciliation.service.ChargebeeConnect;
 import com.cb.reconciliation.service.ConvertToJSON;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +39,26 @@ public class MatchedTransactionController {
     String stripeApiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
     StripeCredentials stripeCredentials = new StripeCredentials(stripeApiKey);
 
-    LocalDateTime startDate = LocalDateTime.of(2022, 3, 22, 0, 0);
-    LocalDateTime endDate = LocalDateTime.now();
+//    LocalDateTime startDate = LocalDateTime.of(2022, 3, 22, 0, 0);
+//    LocalDateTime endDate = LocalDateTime.now();
+
+//    @GetMapping("/test")
+//    public void demo(@RequestParam("start") String startTime, @RequestParam("end") String endTime) throws Exception {
+//        LocalDateTime startDate = LocalDateTime.ofEpochSecond(Long.parseLong(startTime), 0, ZoneOffset.UTC);
+//        LocalDateTime endDate = LocalDateTime.ofEpochSecond(Long.parseLong(endTime), 0, ZoneOffset.UTC);
+//
+//        System.out.println(startDate);
+//        System.out.println(endDate);
+//    }
 
     @GetMapping("/mismatched")
-    public JSONObject getMismatched() throws Exception {
+    public JSONObject getMismatched(@RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
+        Timestamp startTime = new Timestamp(Long.parseLong(start) *1000);
+        Timestamp endTime = new Timestamp(Long.parseLong(end) * 1000);
+
+        System.out.println(startTime);
+        System.out.println(endTime);
+
         MismatchedTransactions computer = new MismatchedTransactions();
 
         Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
@@ -48,7 +67,9 @@ public class MatchedTransactionController {
         Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
         accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
 
-        List<Transaction> finalList = computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate, endDate);
+        List<Transaction> finalList = computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startTime, endTime);
+//        ChargebeeConnect conn = new ChargebeeConnect();
+//        List<Transaction> finalList = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTime, endTime);
         return ConvertToJSON.transactions(finalList);
     }
 
