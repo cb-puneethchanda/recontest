@@ -10,6 +10,15 @@ public class Transaction {
     protected double amount;
     protected String currencyCode;
     protected String transactionType;
+    protected String issues;
+
+    public String getIssues() {
+        return issues;
+    }
+
+    public void setIssues(String issues) {
+        this.issues = issues;
+    }
 
     public Transaction(String id, LocalDateTime date, double amount, String currencyCode) {
         this.id = id;
@@ -80,6 +89,7 @@ public class Transaction {
                 ", amount=" + amount +
                 ", currencyCode='" + currencyCode + '\'' +
                 ", transactionType='" + transactionType + '\'' +
+                ", issues='" + issues + '\'' +
                 '}';
     }
 
@@ -90,6 +100,7 @@ public class Transaction {
         jsonObject.put("currencyCode", this.getCurrencyCode());
         jsonObject.put("date", this.getDate());
         jsonObject.put("transactionType", this.getTransactionType());
+        jsonObject.put("issues", this.getIssues());
 
         return jsonObject;
     }
@@ -99,7 +110,7 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return id.equals(that.id);
+        return id!=null && that.id!=null && id.equals(that.id);
     }
 
 }

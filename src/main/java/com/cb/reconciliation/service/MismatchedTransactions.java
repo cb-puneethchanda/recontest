@@ -7,16 +7,19 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MismatchedTransactions {
-    public ComparedTransactions compareTransactions(
+    public List<Transaction> compareTransactions(
             List<Transaction> chargebeeTransactions,
             List<Transaction> gatewayTransactions,
             List<Transaction> accSoftTransactions) {
-        ComparedTransactions comparedTransactions = new ComparedTransactions();
+        List<Transaction> comparedTransactions = new ArrayList<>();
 
         boolean inGateway=false, inAccSoft=false;
 
@@ -38,19 +41,23 @@ public class MismatchedTransactions {
                 }
             }
             if (inGateway && inAccSoft) {
-                comparedTransactions.addToMatches(chargebeeTransaction);
+                chargebeeTransaction.setIssues("NONE");
+                comparedTransactions.add(chargebeeTransaction);
             } else if (inGateway) {
-               comparedTransactions.addToOnlyInGateway(chargebeeTransaction);
+                chargebeeTransaction.setIssues("NOT_IN_ACCSOFT");
+               comparedTransactions.add(chargebeeTransaction);
             } else if (inAccSoft) {
-                comparedTransactions.addToOnlyInAccSoft(chargebeeTransaction);
+                chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
+                comparedTransactions.add(chargebeeTransaction);
             } else {
-                comparedTransactions.addToNotInBoth(chargebeeTransaction);
+                chargebeeTransaction.setIssues("NOT_IN_BOTH");
+                comparedTransactions.add(chargebeeTransaction);
             }
         }
         return comparedTransactions;
     }
 
-    public void mismatched(
+    public List<Transaction> mismatched(
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
@@ -59,6 +66,7 @@ public class MismatchedTransactions {
             ) throws Exception {
         Timestamp startTimestamp = Timestamp.valueOf(startDate);
         Timestamp endTimestamp = Timestamp.valueOf(endDate);
+        List<Transaction> finalList = new ArrayList<>();
 
         for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
@@ -79,8 +87,14 @@ public class MismatchedTransactions {
                     break;
             }
 
-            ComparedTransactions comparedTransactions = compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
+            List<Transaction> comparedTransactions = compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
             System.out.println(comparedTransactions);
+            finalList = Stream.concat(finalList.stream(), comparedTransactions.stream())
+                    .collect(Collectors.toList());
+
         }
+        System.out.println("FINAL");
+        System.out.println(finalList);
+        return finalList;
     }
 }
