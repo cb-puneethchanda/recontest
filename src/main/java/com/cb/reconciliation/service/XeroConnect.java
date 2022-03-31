@@ -9,6 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +20,10 @@ public class XeroConnect {
     RestTemplate restTemplate = new RestTemplate();
     private final String xeroPaymentAPI = "https://api.xero.com/api.xro/2.0/Payments";
 
-    public String getTransactionURI(LocalDate startDate, LocalDate endDate) {
+    public String getTransactionURI(Timestamp startTime, Timestamp endTime) {
+        LocalDate startDate = startTime.toLocalDateTime().toLocalDate();
+        LocalDate endDate = endTime.toLocalDateTime().toLocalDate();
+
         String queryParams = "?where%3D"
                 + "Date3E%3D"
                 + "DateTime(" + startDate.getYear()
@@ -36,8 +41,8 @@ public class XeroConnect {
 
     public List<Transaction> getTranscations(
             XeroCredentials credentials,
-            LocalDateTime startDate,
-            LocalDateTime endDate) {
+            Timestamp startDate,
+            Timestamp endDate) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("xero-tenant-id", credentials.getXeroTenantId());
@@ -47,7 +52,7 @@ public class XeroConnect {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         // API to xero
-        String uri = getTransactionURI(startDate.toLocalDate(), endDate.toLocalDate());
+        String uri = getTransactionURI(startDate, endDate);
         System.out.println("GET " + uri);
         String jsonResponse = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class).getBody();
 

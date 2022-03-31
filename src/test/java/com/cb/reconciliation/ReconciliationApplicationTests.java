@@ -8,8 +8,10 @@ import com.cb.reconciliation.service.StripeConnect;
 import com.cb.reconciliation.service.XeroConnect;
 import com.stripe.exception.StripeException;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.verification.Times;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,9 +40,12 @@ class ReconciliationApplicationTests {
     LocalDateTime startDate = LocalDateTime.of(2022, 3, 22, 0, 0);
     LocalDateTime endDate = LocalDateTime.now();
 
+    Timestamp startTime = Timestamp.valueOf(startDate);
+    Timestamp endTime = Timestamp.valueOf(endDate);
+
     @Test void testXero(){
         XeroConnect conn = new XeroConnect();
-        List<Transaction> transactions = conn.getTranscations(xeroCredentials, startDate, endDate);
+        List<Transaction> transactions = conn.getTranscations(xeroCredentials, startTime, endTime);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
@@ -48,14 +53,11 @@ class ReconciliationApplicationTests {
 
     @Test
     void testChargebee() throws Exception {
-        Timestamp startTimestamp = Timestamp.valueOf(startDate);
-        Timestamp endTimestamp = Timestamp.valueOf(endDate);
-
         ChargebeeConnect conn = new ChargebeeConnect();
         List<Transaction> transactions;
 //        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
 
-        transactions = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTimestamp, endTimestamp);
+        transactions = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTime, endTime);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
@@ -91,13 +93,10 @@ class ReconciliationApplicationTests {
 
     @Test
     void testStripeBalanceTransaction() throws StripeException {
-        Timestamp startTimestamp = Timestamp.valueOf(startDate);
-        Timestamp endTimestamp = Timestamp.valueOf(endDate);
-
         StripeConnect conn = new StripeConnect();
         List<Transaction> transactions;
 
-        transactions = conn.getBalanceTransaction(stripeCredentials, startTimestamp, endTimestamp);
+        transactions = conn.getBalanceTransaction(stripeCredentials, startTime, endTime);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
         }
@@ -113,6 +112,6 @@ class ReconciliationApplicationTests {
         Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
         accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
 
-        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate, endDate);
+        computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startTime, endTime);
     }
 }

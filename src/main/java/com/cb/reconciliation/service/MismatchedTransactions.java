@@ -69,11 +69,9 @@ public class MismatchedTransactions {
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
-            LocalDateTime startDate,
-            LocalDateTime endDate
+            Timestamp startTimestamp,
+            Timestamp endTimestamp
             ) throws Exception {
-        Timestamp startTimestamp = Timestamp.valueOf(startDate);
-        Timestamp endTimestamp = Timestamp.valueOf(endDate);
         List<Transaction> finalList = new ArrayList<>();
 
         for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
@@ -85,7 +83,7 @@ public class MismatchedTransactions {
                     endTimestamp);
 
             XeroConnect xeroConnect = new XeroConnect();
-            List<Transaction> accSoftTransactions = xeroConnect.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startDate, endDate);
+            List<Transaction> accSoftTransactions = xeroConnect.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startTimestamp, startTimestamp);
 
             List<Transaction> gatewayTransactions = null;
             switch (gatewayCredMap.getKey()) {
