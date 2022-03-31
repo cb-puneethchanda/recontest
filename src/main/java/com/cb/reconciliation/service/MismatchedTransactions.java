@@ -18,8 +18,10 @@ public class MismatchedTransactions {
     public List<Transaction> compareTransactions(
             List<Transaction> chargebeeTransactions,
             List<Transaction> gatewayTransactions,
-            List<Transaction> accSoftTransactions) {
-        List<Transaction> comparedTransactions = new ArrayList<>();
+            List<Transaction> accSoftTransactions,
+            boolean onlyMismatched) {
+        List<Transaction> matchingTransactions = new ArrayList<>();
+        List<Transaction> mismatchedTransactions = new ArrayList<>();
 
         boolean inGateway=false, inAccSoft=false;
 
@@ -42,19 +44,25 @@ public class MismatchedTransactions {
             }
             if (inGateway && inAccSoft) {
                 chargebeeTransaction.setIssues("NONE");
-                comparedTransactions.add(chargebeeTransaction);
+                matchingTransactions.add(chargebeeTransaction);
             } else if (inGateway) {
                 chargebeeTransaction.setIssues("NOT_IN_ACCSOFT");
-               comparedTransactions.add(chargebeeTransaction);
+               mismatchedTransactions.add(chargebeeTransaction);
             } else if (inAccSoft) {
                 chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
-                comparedTransactions.add(chargebeeTransaction);
+                mismatchedTransactions.add(chargebeeTransaction);
             } else {
                 chargebeeTransaction.setIssues("NOT_IN_BOTH");
-                comparedTransactions.add(chargebeeTransaction);
+                mismatchedTransactions.add(chargebeeTransaction);
             }
         }
-        return comparedTransactions;
+
+        if (onlyMismatched){
+            return mismatchedTransactions;
+        }
+        else {
+            return Stream.concat(matchingTransactions.stream(), mismatchedTransactions.stream()).collect(Collectors.toList());
+        }
     }
 
     public List<Transaction> mismatched(
@@ -87,7 +95,7 @@ public class MismatchedTransactions {
                     break;
             }
 
-            List<Transaction> comparedTransactions = compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions);
+            List<Transaction> comparedTransactions = compareTransactions(chargebeeTransactions, gatewayTransactions, accSoftTransactions, true);
             System.out.println(comparedTransactions);
             finalList = Stream.concat(finalList.stream(), comparedTransactions.stream())
                     .collect(Collectors.toList());

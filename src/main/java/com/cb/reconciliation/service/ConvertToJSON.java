@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import java.util.List;
 
 public class ConvertToJSON {
-    public static JSONObject mismatchedTransactions(List<Transaction> transactionList) {
+    public static JSONObject transactions(List<Transaction> transactionList) {
         JSONObject response = new JSONObject();
         JSONArray mismatchedList = new JSONArray();
 

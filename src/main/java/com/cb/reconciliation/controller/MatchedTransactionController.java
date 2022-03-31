@@ -49,7 +49,7 @@ public class MatchedTransactionController {
         accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
 
         List<Transaction> finalList = computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startDate, endDate);
-        return ConvertToJSON.mismatchedTransactions(finalList);
+        return ConvertToJSON.transactions(finalList);
     }
 
 }
