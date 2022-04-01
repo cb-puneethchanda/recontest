@@ -2,6 +2,7 @@ package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.model.credentials.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,7 +67,8 @@ public class MismatchedTransactions {
         }
     }
 
-    public List<Transaction> mismatched(
+    @Async
+    public CompletableFuture mismatched(
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
@@ -73,7 +76,7 @@ public class MismatchedTransactions {
             Timestamp endTimestamp
             ) throws Exception {
         List<Transaction> finalList = new ArrayList<>();
-
+        System.out.println(Thread.currentThread().getName());
         for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
             List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
@@ -81,7 +84,7 @@ public class MismatchedTransactions {
                     gatewayCredMap.getKey(),
                     startTimestamp,
                     endTimestamp);
-
+            System.out.println(Thread.currentThread().getName());
             XeroConnect xeroConnect = new XeroConnect();
             List<Transaction> accSoftTransactions = xeroConnect.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startTimestamp, startTimestamp);
 
@@ -99,8 +102,10 @@ public class MismatchedTransactions {
                     .collect(Collectors.toList());
 
         }
+        System.out.println(Thread.currentThread().getName());
         System.out.println("FINAL");
         System.out.println(finalList);
-        return finalList;
+
+        return CompletableFuture.completedFuture(finalList);
     }
 }
