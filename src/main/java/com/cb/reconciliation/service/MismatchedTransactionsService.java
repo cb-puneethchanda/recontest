@@ -2,21 +2,19 @@ package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.model.credentials.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class MismatchedTransactions {
+public class MismatchedTransactionsService {
     public List<Transaction> compareTransactions(
             List<Transaction> chargebeeTransactions,
             List<Transaction> gatewayTransactions,
@@ -25,7 +23,7 @@ public class MismatchedTransactions {
         List<Transaction> matchingTransactions = new ArrayList<>();
         List<Transaction> mismatchedTransactions = new ArrayList<>();
 
-        boolean inGateway=false, inAccSoft=false;
+        boolean inGateway = false, inAccSoft = false;
 
         for (int i = 0; i < chargebeeTransactions.size(); i++) {
             Transaction chargebeeTransaction = chargebeeTransactions.get(i);
@@ -49,7 +47,7 @@ public class MismatchedTransactions {
                 matchingTransactions.add(chargebeeTransaction);
             } else if (inGateway) {
                 chargebeeTransaction.setIssues("NOT_IN_ACCSOFT");
-               mismatchedTransactions.add(chargebeeTransaction);
+                mismatchedTransactions.add(chargebeeTransaction);
             } else if (inAccSoft) {
                 chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
                 mismatchedTransactions.add(chargebeeTransaction);
@@ -59,40 +57,44 @@ public class MismatchedTransactions {
             }
         }
 
-        if (onlyMismatched){
+        if (onlyMismatched) {
             return mismatchedTransactions;
-        }
-        else {
+        } else {
             return Stream.concat(matchingTransactions.stream(), mismatchedTransactions.stream()).collect(Collectors.toList());
         }
     }
 
+    @Autowired
+    private ChargebeeConnectService chargebeeConnectService;
+    @Autowired
+    private XeroConnectService xeroConnectService;
+    @Autowired
+    private StripeConnectService stripeConnectService;
+
     @Async
-    public CompletableFuture mismatched(
+    public void mismatched(
             ChargebeeCredentials chargebeeCredentials,
             Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap,
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
             Timestamp startTimestamp,
             Timestamp endTimestamp
-            ) throws Exception {
+    ) throws Exception {
+
         List<Transaction> finalList = new ArrayList<>();
         System.out.println(Thread.currentThread().getName());
-        for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
-            ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
-            List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
+        for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap : gatewayCredentialsMap.entrySet()) {
+            List<Transaction> chargebeeTransactions = chargebeeConnectService.getTransactionsByGateway(
                     chargebeeCredentials,
                     gatewayCredMap.getKey(),
                     startTimestamp,
                     endTimestamp);
             System.out.println(Thread.currentThread().getName());
-            XeroConnect xeroConnect = new XeroConnect();
-            List<Transaction> accSoftTransactions = xeroConnect.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startTimestamp, startTimestamp);
+            List<Transaction> accSoftTransactions = xeroConnectService.getTranscations((XeroCredentials) accSoftCredentialsMap.get(AccSoftEnum.XERO), startTimestamp, startTimestamp);
 
             List<Transaction> gatewayTransactions = null;
             switch (gatewayCredMap.getKey()) {
                 case STRIPE:
-                    StripeConnect stripeConnect = new StripeConnect();
-                    gatewayTransactions = stripeConnect.getBalanceTransaction((StripeCredentials) gatewayCredMap.getValue(), startTimestamp, endTimestamp);
+                    gatewayTransactions = stripeConnectService.getBalanceTransaction((StripeCredentials) gatewayCredMap.getValue(), startTimestamp, endTimestamp);
                     break;
             }
 
@@ -103,9 +105,8 @@ public class MismatchedTransactions {
 
         }
         System.out.println(Thread.currentThread().getName());
-        System.out.println("FINAL");
         System.out.println(finalList);
 
-        return CompletableFuture.completedFuture(finalList);
+        //todo: job status update and report update
     }
 }

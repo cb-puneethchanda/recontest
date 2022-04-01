@@ -6,7 +6,7 @@ import com.cb.reconciliation.model.Transaction;
 import com.chargebee.Environment;
 import com.chargebee.ListResult;
 import com.chargebee.filters.enums.SortOrder;
-import com.sun.deploy.security.ValidationState;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ChargebeeConnect {
+public class ChargebeeConnectService {
     public List<Transaction> getTransactionsByGateway(
             ChargebeeCredentials credentials,
             GatewayEnum gatewayEnumType,

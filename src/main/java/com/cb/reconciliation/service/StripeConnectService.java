@@ -5,12 +5,11 @@ import com.cb.reconciliation.model.Transaction;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class StripeConnect {
+public class StripeConnectService {
     public List<Transaction> getTransactions(StripeCredentials credentials, Timestamp startDate, Timestamp endDate) throws StripeException {
         Map<String, Long> dateMap = new HashMap<>();
         dateMap.put("gte", (long) (startDate.getTime() / 1000));
@@ -48,7 +47,6 @@ public class StripeConnect {
 //        System.out.println(transactions);
         return transactions;
     }
-
     public List<Transaction> getRefunds(StripeCredentials credentials, Timestamp startDate, Timestamp endDate) throws StripeException {
         Map<String, Long> dateMap = new HashMap<>();
         dateMap.put("gte", (long) (startDate.getTime() / 1000));
@@ -78,7 +76,6 @@ public class StripeConnect {
         }
         return transactions;
     }
-
     public List<Transaction> getBalanceTransaction(StripeCredentials credentials, Timestamp startDate, Timestamp endDate) throws StripeException {
         Map<String, Long> dateMap = new HashMap<>();
         dateMap.put("gte", (long) (startDate.getTime() / 1000));

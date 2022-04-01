@@ -6,20 +6,18 @@ import com.cb.reconciliation.utils.ParseTransaction;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class XeroConnect {
+public class XeroConnectService {
     RestTemplate restTemplate = new RestTemplate();
     private final String xeroPaymentAPI = "https://api.xero.com/api.xro/2.0/Payments";
-
     public String getTransactionURI(Timestamp startTime, Timestamp endTime) {
         LocalDate startDate = startTime.toLocalDateTime().toLocalDate();
         LocalDate endDate = endTime.toLocalDateTime().toLocalDate();
@@ -38,7 +36,6 @@ public class XeroConnect {
 
         return xeroPaymentAPI + queryParams;
     }
-
     public List<Transaction> getTranscations(
             XeroCredentials credentials,
             Timestamp startDate,
@@ -59,7 +56,7 @@ public class XeroConnect {
         // Parse and Extract
         List<Transaction> xeroTransactions = ParseTransaction.xero(jsonResponse, "default");
 
-//        System.out.println("X");
+        System.out.println("X");
 //        System.out.println(xeroTransactions);
         return xeroTransactions;
     }

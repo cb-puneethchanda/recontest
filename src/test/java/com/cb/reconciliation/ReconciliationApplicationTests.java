@@ -2,20 +2,16 @@ package com.cb.reconciliation;
 
 import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.model.credentials.*;
-import com.cb.reconciliation.service.ChargebeeConnect;
-import com.cb.reconciliation.service.MismatchedTransactions;
-import com.cb.reconciliation.service.StripeConnect;
-import com.cb.reconciliation.service.XeroConnect;
+import com.cb.reconciliation.service.ChargebeeConnectService;
+import com.cb.reconciliation.service.MismatchedTransactionsService;
+import com.cb.reconciliation.service.StripeConnectService;
+import com.cb.reconciliation.service.XeroConnectService;
 import com.stripe.exception.StripeException;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.verification.Times;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +40,7 @@ class ReconciliationApplicationTests {
     Timestamp endTime = Timestamp.valueOf(endDate);
 
     @Test void testXero(){
-        XeroConnect conn = new XeroConnect();
+        XeroConnectService conn = new XeroConnectService();
         List<Transaction> transactions = conn.getTranscations(xeroCredentials, startTime, endTime);
         for (Transaction transaction: transactions) {
             System.out.println(transaction);
@@ -53,7 +49,7 @@ class ReconciliationApplicationTests {
 
     @Test
     void testChargebee() throws Exception {
-        ChargebeeConnect conn = new ChargebeeConnect();
+        ChargebeeConnectService conn = new ChargebeeConnectService();
         List<Transaction> transactions;
 //        com.chargebee.models.Transaction.Type transactionType = com.chargebee.models.Transaction.Type.REFUND;
 
@@ -68,7 +64,7 @@ class ReconciliationApplicationTests {
         Timestamp startTimestamp = Timestamp.valueOf(startDate);
         Timestamp endTimestamp = Timestamp.valueOf(endDate);
 
-        StripeConnect conn = new StripeConnect();
+        StripeConnectService conn = new StripeConnectService();
         List<Transaction> transactions;
 
         transactions = conn.getTransactions(stripeCredentials, startTimestamp, endTimestamp);
@@ -82,7 +78,7 @@ class ReconciliationApplicationTests {
         Timestamp startTimestamp = Timestamp.valueOf(startDate);
         Timestamp endTimestamp = Timestamp.valueOf(endDate);
 
-        StripeConnect conn = new StripeConnect();
+        StripeConnectService conn = new StripeConnectService();
         List<Transaction> transactions;
 
         transactions = conn.getRefunds(stripeCredentials, startTimestamp, endTimestamp);
@@ -93,7 +89,7 @@ class ReconciliationApplicationTests {
 
     @Test
     void testStripeBalanceTransaction() throws StripeException {
-        StripeConnect conn = new StripeConnect();
+        StripeConnectService conn = new StripeConnectService();
         List<Transaction> transactions;
 
         transactions = conn.getBalanceTransaction(stripeCredentials, startTime, endTime);
@@ -104,7 +100,7 @@ class ReconciliationApplicationTests {
 
     @Test
     void mismatched() throws Exception {
-        MismatchedTransactions computer = new MismatchedTransactions();
+        MismatchedTransactionsService computer = new MismatchedTransactionsService();
 
         Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
         gatewayCredentialsMap.put(GatewayEnum.STRIPE, stripeCredentials);
