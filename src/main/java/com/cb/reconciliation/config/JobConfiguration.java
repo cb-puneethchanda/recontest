@@ -35,7 +35,7 @@ public class JobConfiguration {
             Job newJob = Job.builder()
 //                    .jobId(UUID.randomUUID().toString())
                     .jobId("1")
-                    .chargebeeSiteUrl("siteurl")
+                    .chargebeeSiteUrl("url1")
                     .gateway("stripe")
                     .startTime(Timestamp.valueOf(LocalDateTime.of(2022, 3, 22, 0, 0)))
                     .endTime((Timestamp.valueOf(LocalDateTime.now())))
@@ -44,8 +44,21 @@ public class JobConfiguration {
                     .mismatched(json)
                     .build();
 
+            Job newJob2 = Job.builder()
+//                    .jobId(UUID.randomUUID().toString())
+                    .jobId("2")
+                    .chargebeeSiteUrl("url1")
+                    .gateway("stripe")
+                    .startTime(Timestamp.valueOf(LocalDateTime.of(2022, 3, 22, 0, 0)))
+                    .endTime((Timestamp.valueOf(LocalDateTime.now())))
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .status("SUCCESS")
+                    .mismatched(json)
+                    .build();
+
             List<Job> l = new ArrayList<Job>();
             l.add(newJob);
+            l.add(newJob2);
             repository.saveAll(l);
         };
     }

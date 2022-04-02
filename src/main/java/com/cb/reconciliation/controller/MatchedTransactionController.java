@@ -2,6 +2,7 @@ package com.cb.reconciliation.controller;
 
 import com.cb.reconciliation.model.AccSoftEnum;
 import com.cb.reconciliation.model.GatewayEnum;
+import com.cb.reconciliation.model.JobFilter;
 import com.cb.reconciliation.model.Transaction;
 import com.cb.reconciliation.model.credentials.*;
 import com.cb.reconciliation.service.ConvertToJSON;
@@ -13,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.PathParam;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -84,10 +86,13 @@ public class MatchedTransactionController {
     @GetMapping("/job/{id}")
     public JSONObject getJob(@PathVariable("id") String jobId) throws JSONException, ParseException {
         System.out.println("GET /job/" + jobId);
-        System.out.println(jobService.getJob(jobId));
+//        System.out.println(jobService.getJob(jobId));
         return jobService.getJob(jobId);
     }
 
-
-
+    @GetMapping("/job/")
+    public JSONObject getAllJob(@RequestBody JobFilter jobFilter) throws JSONException, ParseException {
+        System.out.println("GET /job/");
+        return jobService.getAllJob(jobFilter);
+    }
 }
