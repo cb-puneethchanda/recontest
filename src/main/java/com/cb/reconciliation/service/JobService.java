@@ -21,16 +21,13 @@ public class JobService {
 
     public JSONObject getJobById(String jobId) throws JSONException {
         Optional<Job> jobOptional = repository.findJobByJobId(jobId);
-        if (jobOptional.isPresent()) {
-            JSONObject response = new JSONObject();
-            String status = jobOptional.get().getStatus();
-            response.put("jobId", jobId);
-            response.put("status", status);
-            return response;
+        if (!jobOptional.isPresent()) {
+            return Job.errorJSON(jobId);
         }
-        else {
-            ErrorJSON errorJSON = new ErrorJSON("NO_JOB", "Job with id " + jobId + " doesnt exist");
-            return errorJSON.toJSON();
-        }
+        JSONObject response = new JSONObject();
+        String status = jobOptional.get().getStatus();
+        response.put("jobId", jobId);
+        response.put("status", status);
+        return response;
     }
 }
