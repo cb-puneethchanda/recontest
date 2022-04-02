@@ -38,6 +38,7 @@ public class JobService {
     public JSONObject getJob(String jobId) throws JSONException, ParseException {
         Optional<Job> jobOptional = repository.findJobByJobId(jobId);
         if (!jobOptional.isPresent()) {
+            // todo status code
             return Job.errorJSON(jobId);
         }
         Job job = jobOptional.get();

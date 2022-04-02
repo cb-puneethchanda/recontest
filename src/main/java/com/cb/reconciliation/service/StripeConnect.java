@@ -64,7 +64,6 @@ public class StripeConnect {
 
         List<Transaction> transactions = new ArrayList<>();
         for (Refund refund: refunds.getData()) {
-            // todo check
             String idAtGateway = refund.getId();
             double amount = refund.getAmount();
             String currencyCode = refund.getCurrency();
