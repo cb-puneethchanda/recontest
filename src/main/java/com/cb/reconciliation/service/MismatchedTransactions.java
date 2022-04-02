@@ -5,8 +5,6 @@ import com.cb.reconciliation.model.credentials.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +50,7 @@ public class MismatchedTransactions {
                 chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
                 mismatchedTransactions.add(chargebeeTransaction);
             } else {
+                // todo notinboth
                 chargebeeTransaction.setIssues("NOT_IN_BOTH");
                 mismatchedTransactions.add(chargebeeTransaction);
             }
