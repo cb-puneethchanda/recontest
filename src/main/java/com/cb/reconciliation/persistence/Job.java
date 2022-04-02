@@ -21,12 +21,26 @@ import java.sql.Timestamp;
 public class Job {
     @Id
     private String jobId;
-    @NonNull
+//    @NonNull
     private String chargebeeSiteUrl;
-    @NonNull
+//    @NonNull
     private String gateway;
-    @NonNull
+//    @NonNull
     private String status;
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "jobId='" + jobId + '\'' +
+                ", chargebeeSiteUrl='" + chargebeeSiteUrl + '\'' +
+                ", gateway='" + gateway + '\'' +
+                ", status='" + status + '\'' +
+                ", mismatched=" + mismatched +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 
     @Column(columnDefinition = "TEXT")
     @Convert(converter= JSONObjectConverter.class)
