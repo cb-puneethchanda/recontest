@@ -2,9 +2,10 @@ package com.cb.reconciliation.service;
 
 import com.cb.reconciliation.persistence.Job;
 import com.cb.reconciliation.persistence.JobRepository;
-import com.cb.reconciliation.utils.ErrorJSON;
+import com.cb.reconciliation.utils.JSONFormatConverter;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class JobService {
         this.repository = repository;
     }
 
-    public JSONObject getJobById(String jobId) throws JSONException {
+    public JSONObject getJobStatus(String jobId) throws JSONException {
         Optional<Job> jobOptional = repository.findJobByJobId(jobId);
         if (!jobOptional.isPresent()) {
             return Job.errorJSON(jobId);
@@ -28,6 +29,16 @@ public class JobService {
         String status = jobOptional.get().getStatus();
         response.put("jobId", jobId);
         response.put("status", status);
+        return response;
+    }
+
+    public JSONObject getJob(String jobId) throws JSONException, ParseException {
+        Optional<Job> jobOptional = repository.findJobByJobId(jobId);
+        if (!jobOptional.isPresent()) {
+            return Job.errorJSON(jobId);
+        }
+        Job job = jobOptional.get();
+        JSONObject response = JSONFormatConverter.toSimpleJSON(job.getMismatched());
         return response;
     }
 }

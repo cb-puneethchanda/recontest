@@ -9,6 +9,7 @@ import com.cb.reconciliation.service.JobService;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/reconciliation")
+@RequestMapping("api/v1/")
 public class MatchedTransactionController {
 
     String xeroTenantId = "e39e9d62-44ae-4814-adbc-3b897c9b67bd";
@@ -48,7 +49,7 @@ public class MatchedTransactionController {
 //        System.out.println(endDate);
 //    }
 
-    @GetMapping("/mismatched")
+    @GetMapping("reconciliation/mismatched")
     public JSONObject getMismatched(@RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
         Timestamp startTime = new Timestamp(Long.parseLong(start) *1000);
         Timestamp endTime = new Timestamp(Long.parseLong(end) * 1000);
@@ -76,8 +77,17 @@ public class MatchedTransactionController {
     @GetMapping("/job/{id}/status")
     public JSONObject getJobStatus(@PathVariable("id") String jobId) throws JSONException {
         System.out.println("GET /job/" + jobId + "/status");
-        System.out.println(jobService.getJobById(jobId));
-        return jobService.getJobById(jobId);
+//        System.out.println(jobService.getJobById(jobId));
+        return jobService.getJobStatus(jobId);
     }
+
+    @GetMapping("/job/{id}")
+    public JSONObject getJob(@PathVariable("id") String jobId) throws JSONException, ParseException {
+        System.out.println("GET /job/" + jobId);
+        System.out.println(jobService.getJob(jobId));
+        return jobService.getJob(jobId);
+    }
+
+
 
 }

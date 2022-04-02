@@ -4,6 +4,8 @@ import com.cb.reconciliation.utils.ErrorJSON;
 import lombok.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -35,7 +37,7 @@ public class Job {
     private Timestamp createdAt;
 
     public static org.json.simple.JSONObject errorJSON(String id) throws JSONException {
-        ErrorJSON errorJSON = new ErrorJSON("NO_JOB", "Job with id " + id + " doesnt exist");
+        ErrorJSON errorJSON = new ErrorJSON("INVALID_ID", "Job with id " + id + " doesnt exist");
         return errorJSON.toJSON();
     }
 
