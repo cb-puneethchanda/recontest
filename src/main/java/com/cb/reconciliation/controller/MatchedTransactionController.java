@@ -5,12 +5,12 @@ import com.cb.reconciliation.model.GatewayEnum;
 import com.cb.reconciliation.model.Transaction;
 import com.cb.reconciliation.model.credentials.*;
 import com.cb.reconciliation.service.ConvertToJSON;
+import com.cb.reconciliation.service.JobService;
 import com.cb.reconciliation.service.MismatchedTransactions;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -68,6 +68,16 @@ public class MatchedTransactionController {
 //        ChargebeeConnect conn = new ChargebeeConnect();
 //        List<Transaction> finalList = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTime, endTime);
         return ConvertToJSON.transactions(finalList);
+    }
+
+    @Autowired
+    JobService jobService;
+
+    @GetMapping("/job/{id}/status")
+    public JSONObject getJobStatus(@PathVariable("id") String jobId) throws JSONException {
+        System.out.println("GET /job/" + jobId + "/status");
+        System.out.println(jobService.getJobById(jobId));
+        return jobService.getJobById(jobId);
     }
 
 }

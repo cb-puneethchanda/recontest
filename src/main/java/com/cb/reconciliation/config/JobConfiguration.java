@@ -33,7 +33,8 @@ public class JobConfiguration {
                     "}");
 
             Job newJob = Job.builder()
-                    .jobId(UUID.randomUUID().toString())
+//                    .jobId(UUID.randomUUID().toString())
+                    .jobId("1")
                     .chargebeeSiteUrl("siteurl")
                     .gateway("stripe")
                     .startTime(Timestamp.valueOf(LocalDateTime.of(2022, 3, 22, 0, 0)))
