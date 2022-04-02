@@ -1,11 +1,10 @@
 package com.cb.reconciliation.controller;
 
-import com.cb.reconciliation.model.AccSoftEnum;
-import com.cb.reconciliation.model.GatewayEnum;
-import com.cb.reconciliation.model.JobFilter;
-import com.cb.reconciliation.model.Transaction;
+import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.model.credentials.*;
-import com.cb.reconciliation.service.ConvertToJSON;
+import com.cb.reconciliation.persistence.Job;
+import com.cb.reconciliation.persistence.JobRepository;
+import com.cb.reconciliation.service.ConvertToJSONSimple;
 import com.cb.reconciliation.service.JobService;
 import com.cb.reconciliation.service.MismatchedTransactions;
 import org.json.JSONException;
@@ -14,11 +13,12 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.PathParam;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/")
@@ -28,7 +28,7 @@ public class MatchedTransactionController {
     String refreshToken = "";
     String clientId = "";
     String clientSecret = "";
-    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg3MDcwNjQsImV4cCI6MTY0ODcwODg2NCwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODcwNjkzNywieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjFmOTM3MWU0MTQ4ZDRlZGY4Y2JhZDZiZGExMmRlMTlhIiwianRpIjoiYWI5MjdjYThjOGRiMTA1Yjg5ZDNmZDg3ZjNiMTU4YTUiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjY5NWQxMWNmLTgyNzUtNGE3Zi05OGZiLTJiZDliYjk4M2M4NSIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.yHGHnN6mZm5rj1s9KsC4TB7gbUITWMXZEkaIEh5oplUsu7f7sMjV3pS-mgIa0SsFvPE9h3PFJYYXMUGVx_bnK5BZbVFGM-luEdsgPBcHy8T_gPtu7YnvKeoLbWuxXsUHGNB7puq27fyUlbMzaPUBZMiZUSirzX1W_m4dYXB0NFwPFSmF3sZKG8nWaYtIQIjb92xiE-G0sra6ICpnLddigteT-SPOWXzjMS0ZjAD6IdR0zX98NXNR59lwguN7hGP2LqhrlxQiK-hVhdvZGlvefTegaw16LSZF27f6SNdVNdb7HO0fWeTiZCQBLXTq76QJ5qIFrO1jEFAKFC3zvpXARw";
+    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDg4ODU1NTcsImV4cCI6MTY0ODg4NzM1NywiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiNUE5RkQzMUM3QkM1NEVGRDg5MjQ0RDYzQzBDODM3NUEiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0ODg4NTUzOSwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6ImQ3MWU5OWUyMjdkMTQ3ZjlhNjE0NDk4ZjI1ZDJiODE5IiwianRpIjoiZTk4N2FmNmUzYmZlNDBhZjA4MTkyZDFkMGFmZmFhMDQiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjZiYWZhMmZiLTA4NTAtNGQ0ZS04OGJiLWRjNDAwODU0OWQ3NiIsInNjb3BlIjpbImVtYWlsIiwicHJvZmlsZSIsIm9wZW5pZCIsImFjY291bnRpbmcuc2V0dGluZ3MiLCJhY2NvdW50aW5nLnRyYW5zYWN0aW9ucyIsImFjY291bnRpbmcuY29udGFjdHMiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl19.wjCSzCQd_3o7Mw_EKdkrXXfEL7Tyz3XWqYnDcX0XEjOjkak-B_g8TNt7eFnJSkM-7tNz6y-T0mYJ0icXCrJ0rMAEqjrZwogI75SLEaBTCfn6RuVC2vDjqlaLi7OPvPys5PZoRYI9-96I1IHEvZ84E0dYDGuZB4SC9pa9nT6T7sJBqRWdgju6Xth8nbYwbkWZfAZkj8qp7P11YN53GNtmR00uytNVxyAOrxheGYNjBX-0Hn0W_-oWPQPqGGjaciajRomEm7rYBqYFOHaCX4AcuxH6v874I36wKrpOj4kAweFZ8J7Tbv9tyyl65_ZCNLq_ELGxYB_LMP8nbgggpvLDzQ";
     // XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
     XeroCredentials xeroCredentials = new XeroCredentials(xeroTenantId, accessToken);
 
@@ -39,42 +39,28 @@ public class MatchedTransactionController {
     String stripeApiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
     StripeCredentials stripeCredentials = new StripeCredentials(stripeApiKey);
 
-//    LocalDateTime startDate = LocalDateTime.of(2022, 3, 22, 0, 0);
-//    LocalDateTime endDate = LocalDateTime.now();
-
-//    @GetMapping("/test")
-//    public void demo(@RequestParam("start") String startTime, @RequestParam("end") String endTime) throws Exception {
-//        LocalDateTime startDate = LocalDateTime.ofEpochSecond(Long.parseLong(startTime), 0, ZoneOffset.UTC);
-//        LocalDateTime endDate = LocalDateTime.ofEpochSecond(Long.parseLong(endTime), 0, ZoneOffset.UTC);
-//
-//        System.out.println(startDate);
-//        System.out.println(endDate);
-//    }
+    Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
+    Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
 
     @GetMapping("reconciliation/mismatched")
     public JSONObject getMismatched(@RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
         Timestamp startTime = new Timestamp(Long.parseLong(start) *1000);
         Timestamp endTime = new Timestamp(Long.parseLong(end) * 1000);
 
-        System.out.println(startTime);
-        System.out.println(endTime);
-
         MismatchedTransactions computer = new MismatchedTransactions();
 
-        Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
         gatewayCredentialsMap.put(GatewayEnum.STRIPE, stripeCredentials);
-
-        Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap = new HashMap<>();
         accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
 
         List<Transaction> finalList = computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, startTime, endTime);
-//        ChargebeeConnect conn = new ChargebeeConnect();
-//        List<Transaction> finalList = conn.getTransactionsByGateway(chargebeeCredentials, GatewayEnum.STRIPE, startTime, endTime);
-        return ConvertToJSON.transactions(finalList);
+        return ConvertToJSONSimple.transactions(finalList);
     }
 
     @Autowired
     JobService jobService;
+
+    @Autowired
+    JobRepository repository;
 
     @GetMapping("/job/{id}/status")
     public JSONObject getJobStatus(@PathVariable("id") String jobId) throws JSONException {
@@ -94,5 +80,41 @@ public class MatchedTransactionController {
     public JSONObject getAllJob(@RequestBody JobFilter jobFilter) throws JSONException, ParseException {
         System.out.println("GET /job/");
         return jobService.getAllJob(jobFilter);
+    }
+
+    @PostMapping("/reconcile")
+    public JSONObject createJob(@RequestBody JobArguments arguments) throws Exception {
+        System.out.println("POST /reconcile");
+
+        String jobId = UUID.randomUUID().toString();
+        Timestamp startTime = new Timestamp(Long.parseLong(arguments.getStart()) *1000);
+        Timestamp endTime = new Timestamp(Long.parseLong(arguments.getEnd()) *1000);
+        String gateway = arguments.getGateway();
+        String siteUrl = arguments.getSiteUrl();
+
+        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+        String status = "PROCESSING";
+
+        Job newJob = Job.builder()
+                .jobId(jobId)
+                .chargebeeSiteUrl(siteUrl)
+                .gateway(gateway)
+                .startTime(startTime)
+                .endTime(endTime)
+                .status(status)
+                .createdAt(createdAt)
+                .build();
+//        System.out.println(newJob);
+        repository.save(newJob);
+
+        // credentials
+        gatewayCredentialsMap.put(GatewayEnum.STRIPE, stripeCredentials);
+        accSoftCredentialsMap.put(AccSoftEnum.XERO, xeroCredentials);
+
+        jobService.executeJob(jobId, chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap);
+
+        JSONObject response = new JSONObject();
+        response.put("jobId", jobId);
+        return response;
     }
 }
