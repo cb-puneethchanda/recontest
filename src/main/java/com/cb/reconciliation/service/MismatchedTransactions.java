@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,31 +22,31 @@ public class MismatchedTransactions {
         List<Transaction> matchingTransactions = new ArrayList<>();
         List<Transaction> mismatchedTransactions = new ArrayList<>();
 
-        boolean inGateway=false, inAccSoft=false;
+        HashSet<Transaction> GWTxn = new HashSet<>(gatewayTransactions);
+        HashSet<Transaction> ACTxn = new HashSet<>(accSoftTransactions);
+
+        boolean inGateway = false, inAccSoft = false;
 
         for (int i = 0; i < chargebeeTransactions.size(); i++) {
             Transaction chargebeeTransaction = chargebeeTransactions.get(i);
             inGateway = false;
 
-            for (int j = 0; j < gatewayTransactions.size(); j++) {
-                if (chargebeeTransaction.equals(gatewayTransactions.get(j))) {
-                    inGateway = true;
-                    inAccSoft = false;
+            if (GWTxn.contains(chargebeeTransaction)) {
+                inGateway = true;
+                inAccSoft = false;
 
-                    for (int k = 0; k < accSoftTransactions.size(); k++) {
-                        if (chargebeeTransaction.equals(accSoftTransactions.get(k))) {
-                            inAccSoft = true;
-                            break;
-                        }
-                    }
+                if (ACTxn.contains(chargebeeTransaction)) {
+                    inAccSoft = true;
+                    break;
                 }
             }
+
             if (inGateway && inAccSoft) {
                 chargebeeTransaction.setIssues("NONE");
                 matchingTransactions.add(chargebeeTransaction);
             } else if (inGateway) {
                 chargebeeTransaction.setIssues("NOT_IN_ACCSOFT");
-               mismatchedTransactions.add(chargebeeTransaction);
+                mismatchedTransactions.add(chargebeeTransaction);
             } else if (inAccSoft) {
                 chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
                 mismatchedTransactions.add(chargebeeTransaction);
@@ -56,10 +57,9 @@ public class MismatchedTransactions {
             }
         }
 
-        if (onlyMismatched){
+        if (onlyMismatched) {
             return mismatchedTransactions;
-        }
-        else {
+        } else {
             return Stream.concat(matchingTransactions.stream(), mismatchedTransactions.stream()).collect(Collectors.toList());
         }
     }
@@ -70,10 +70,11 @@ public class MismatchedTransactions {
             Map<AccSoftEnum, AccSoftCredentials> accSoftCredentialsMap,
             Timestamp startTimestamp,
             Timestamp endTimestamp
-            ) throws Exception {
+    ) throws Exception {
         List<Transaction> finalList = new ArrayList<>();
+//        Thread.sleep(20000);
 
-        for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap: gatewayCredentialsMap.entrySet()) {
+        for (Map.Entry<GatewayEnum, GatewayCredentials> gatewayCredMap : gatewayCredentialsMap.entrySet()) {
             ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
             List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
                     chargebeeCredentials,

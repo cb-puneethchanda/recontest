@@ -3,6 +3,7 @@ package com.cb.reconciliation.model;
 import org.json.simple.JSONObject;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Transaction {
     protected String id;
@@ -113,4 +114,8 @@ public class Transaction {
         return id!=null && that.id!=null && id.equals(that.id);
     }
 
+    @Override
+    public int hashCode() {
+        return id.length();
+    }
 }
