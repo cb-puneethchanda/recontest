@@ -4,6 +4,7 @@ import com.cb.reconciliation.model.*;
 import com.cb.reconciliation.model.credentials.*;
 import com.cb.reconciliation.persistence.Job;
 import com.cb.reconciliation.persistence.JobRepository;
+import com.cb.reconciliation.service.ChargebeeConnect;
 import com.cb.reconciliation.service.ConvertToJSONSimple;
 import com.cb.reconciliation.service.JobService;
 import com.cb.reconciliation.service.MismatchedTransactions;
@@ -29,7 +30,7 @@ public class MatchedTransactionController {
     String clientId = "";
     String clientSecret = "";
     // XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
-    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDkwNTgyNzYsImV4cCI6MTY0OTA2MDA3NiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0OTA1ODI1NSwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6Ijg4YTc4ZjIwZTVlYzQ1YWM4NTM1NzIzYzhlZTg5Y2UxIiwianRpIjoiOTAxOWExZWUxM2UyNzQwNmE3ZDFjNDUwMzIzNWUwM2UiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6Ijc2NmNiOWM0LWIwMDEtNDllNS04NzU3LTJkODdjN2M5MWVhZCIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.cIjJGvFK2_Pav3M_P9fo5VKP1YL2aKR2Shfj1o0UhcDmMZAS3jjXNqeWEZUzkeaDRiuvFmdDc_MSqE6b5y7VHIU18iEcCg1hp9MucxiTtOf6kuFWVeL5IT3xdCmMDW8gdRJQAtM_QioqJyg9_15fqtMKtDdg5cGJ6rs12ZEAf4nOBmB49xvfoXs_4ScXi2kVn-DSTih_q77kbgQON5UdYbNw4yQVBEZLCmurOV7-7XjiDbwBOEYi_r4q5n3mirBS_p6leYrtfjLSHFN_iUlxS8_hkFBL4Vjc1SkuoFGj5XhU1ubWjnkVLD7kX6Td_RU-0PECsXPfLmlR9K7dzB6rDQ";
+    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDk4MzkwODMsImV4cCI6MTY0OTg0MDg4MywiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0OTgzOTA3MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjI5OWM2ODc0ZjBmMDQwYTk4ZTU0YThlMDlmYmM4MWU4IiwianRpIjoiZDVlNjA4NjBhYWJkMTJhZDIxNjA4OWE5ODA4NmE3ZGQiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjA0ZmMyNWY4LTViMzctNDYwMS1iNGYyLTIxYTIwMGQ3OGQ5YyIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInNzbyJdfQ.lfeUuZxEQ-z4TYUcXGnQGUOa8wDJE2YsS9twOe1tKF9aMnLO-V_bQxSEkajx9VhGjWF44HRr8JnRPJcnVaW6Z3tcJA5a4v-amKUXblNlWDVR7nphn0H4GAsc4CHolR6d2hNxRAx9cY6nRMxduY2_oNN01u_IzdUs_FXHQ74fC6LHCKSbZFSQPf1Zldy7-kdf9CYOISsKAnaCe6bgfySJtGl0qfE28Oirki4IUn0wj13bm07QymTZEAzhfDKXF0BkZ5qHqKGQUbP-xpEKcsRKsG1OITG0kCbDh28QlW2YNjllh-aSMbdq68IJiMF3ZIFtaTROiXnkztpe2qpuMg9QNw";
     XeroCredentials xeroCredentials = new XeroCredentials(xeroTenantId, accessToken);
 
     String chargebeeSiteUrl = "reconciletest-test";
@@ -116,5 +117,25 @@ public class MatchedTransactionController {
         JSONObject response = new JSONObject();
         response.put("jobId", jobId);
         return response;
+    }
+
+    @GetMapping("/chb_txns")
+    public List<Transaction> getCbhTxns(@RequestBody JobArguments arguments) throws Exception {
+        System.out.println("POST /chb_txns");
+
+        String jobId = UUID.randomUUID().toString();
+        Timestamp startTime = new Timestamp(Long.parseLong(arguments.getStart()) *1000);
+        Timestamp endTime = new Timestamp(Long.parseLong(arguments.getEnd()) *1000);
+        String gateway = arguments.getGateway();
+        String siteUrl = arguments.getSiteUrl();
+
+        ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
+        List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
+                chargebeeCredentials,
+                GatewayEnum.STRIPE,
+                startTime,
+                endTime);
+
+        return chargebeeTransactions;
     }
 }

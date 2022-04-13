@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 public class ChargebeeConnect {
+
     public List<Transaction> getTransactionsByGateway(
             ChargebeeCredentials credentials,
             GatewayEnum gatewayEnumType,

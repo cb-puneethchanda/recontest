@@ -80,7 +80,13 @@ public class JobService {
         Job job = repository.getById(jobId);
 
         List<Transaction> finalList = computer.mismatched(chargebeeCredentials, gatewayCredentialsMap, accSoftCredentialsMap, job.getStartTime(), job.getEndTime());
-        org.json.JSONObject result = ConvertToJSON.transactions(finalList);
+        ChargebeeConnect chargebeeConnect = new ChargebeeConnect();
+        List<Transaction> chargebeeTransactions = chargebeeConnect.getTransactionsByGateway(
+                chargebeeCredentials,
+                GatewayEnum.STRIPE,
+                job.getStartTime(),
+                job.getEndTime());
+        org.json.JSONObject result = ConvertToJSON.transactions(finalList,chargebeeTransactions);
 
         job.setMismatched(result);
 //        Thread.sleep(1000);
