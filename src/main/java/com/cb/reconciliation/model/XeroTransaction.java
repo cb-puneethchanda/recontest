@@ -12,8 +12,8 @@ public class XeroTransaction extends Transaction{
         super(id);
     }
 
-    public XeroTransaction(String id, LocalDateTime date, double amount, String currencyCode) {
-        super(id, date, amount, currencyCode);
+    public XeroTransaction(String id, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay) {
+        super(id, date, amount, currencyCode, paymentMethod, gateWay);
     }
 
 

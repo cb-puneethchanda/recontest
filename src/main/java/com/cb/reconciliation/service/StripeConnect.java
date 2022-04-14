@@ -37,11 +37,13 @@ public class StripeConnect {
             String idAtGateway = charge.getId();
             double amount = charge.getAmount();
             String currencyCode = charge.getCurrency();
+            String paymentMethod = charge.getPaymentMethod();
+            String gateWay = charge.getPaymentIntent();
             long epochTime = charge.getCreated();
 //            LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochTime), ZoneId.systemDefault());
             LocalDateTime date = LocalDateTime.ofEpochSecond(epochTime, 0, ZoneOffset.UTC);
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, paymentMethod, gateWay);
             transactions.add(tr);
         }
 //        System.out.println("ST");
@@ -67,12 +69,14 @@ public class StripeConnect {
             String idAtGateway = refund.getId();
             double amount = refund.getAmount();
             String currencyCode = refund.getCurrency();
+            String paymentMethod = refund.getPaymentIntent();
+            String gateWay = refund.getPaymentIntent();
             long epochTime = refund.getCreated();
             LocalDateTime date = LocalDateTime.ofEpochSecond(epochTime, 0, ZoneOffset.UTC);
 
 //            refund.ge();
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, paymentMethod, gateWay);
             transactions.add(tr);
         }
         return transactions;
@@ -96,10 +100,12 @@ public class StripeConnect {
             String idAtGateway = balanceTransaction.getSource();
             double amount = balanceTransaction.getAmount();
             String currencyCode = balanceTransaction.getCurrency();
+            String paymentMethod = balanceTransaction.getSource();
+            String gateWay = balanceTransaction.getSource();
             long epochTime = balanceTransaction.getCreated();
             LocalDateTime date = LocalDateTime.ofEpochSecond(epochTime, 0, ZoneOffset.UTC);
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode);
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, paymentMethod, gateWay);
             transactions.add(tr);
         }
 //        System.out.println("ST");

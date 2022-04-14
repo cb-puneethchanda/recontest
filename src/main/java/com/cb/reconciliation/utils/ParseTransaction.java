@@ -40,12 +40,14 @@ public class ParseTransaction {
             // Currency
             JSONObject invoice = (JSONObject) payment.get("Invoice");
             String currencyCode = (String) invoice.get("CurrencyCode");
+            String paymentMethod = (String) invoice.get("paymentMethod");
+            String gateWay = (String) invoice.get("gateWay");
             // Date
             String dateFromJSON = (String) payment.get("Date");
             String epochString = dateFromJSON.split("[(]")[1].split("[+]")[0].trim();
             LocalDateTime date = Instant.ofEpochMilli(Long.parseLong(epochString)).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-            Transaction transaction = new Transaction(id, date, amount, currencyCode);
+            Transaction transaction = new Transaction(id, date, amount, currencyCode, paymentMethod, gateWay);
             transactions.add(transaction);
         }
         return transactions;

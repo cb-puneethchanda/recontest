@@ -49,6 +49,8 @@ public class ChargebeeConnect {
             String idAtGateway = cb_transaction.idAtGateway();
             double amount = cb_transaction.amount();
             String currencyCode = cb_transaction.currencyCode();
+            String paymentMethod = cb_transaction.paymentMethod().toString();
+            String gateWay = cb_transaction.gateway().toString();
             LocalDateTime date = cb_transaction.date().toLocalDateTime();
 
             com.chargebee.models.Transaction.Type type = cb_transaction.type();
@@ -59,7 +61,7 @@ public class ChargebeeConnect {
                 transactionType = "refund";
             }
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, transactionType);
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, transactionType, paymentMethod, gateWay);
             transactions.add(tr);
         }
 //        System.out.println("CB");

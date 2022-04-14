@@ -12,6 +12,8 @@ public class Transaction {
     protected String currencyCode;
     protected String transactionType;
     protected String issues;
+    protected String paymentMethod;
+    protected String gateWay;
 
     public String getIssues() {
         return issues;
@@ -21,11 +23,13 @@ public class Transaction {
         this.issues = issues;
     }
 
-    public Transaction(String id, LocalDateTime date, double amount, String currencyCode) {
+    public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay) {
         this.id = id;
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
+        this.paymentMethod = paymentMethod;
+        this.gateWay = gateWay;
     }
 
     public String getTransactionType() {
@@ -36,12 +40,15 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
-    public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String transactionType) {
+
+    public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String transactionType, String paymentMethod, String gateWay) {
         this.id = id;
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.transactionType = transactionType;
+        this.paymentMethod = paymentMethod;
+        this.gateWay = gateWay;
     }
 
     public Transaction(String id) {
@@ -82,6 +89,22 @@ public class Transaction {
         this.id = id;
     }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getGateWay() {
+        return gateWay;
+    }
+
+    public void setGateWay(String gateWay) {
+        this.gateWay = gateWay;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
@@ -91,6 +114,8 @@ public class Transaction {
                 ", currencyCode='" + currencyCode + '\'' +
                 ", transactionType='" + transactionType + '\'' +
                 ", issues='" + issues + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", gateWay='" + gateWay + '\'' +
                 '}';
     }
 
@@ -102,6 +127,8 @@ public class Transaction {
         jsonObject.put("date", this.getDate());
         jsonObject.put("transactionType", this.getTransactionType());
         jsonObject.put("issues", this.getIssues());
+        jsonObject.put("paymentMethod", this.getPaymentMethod());
+        jsonObject.put("gateWay", this.getGateWay());
 
         return jsonObject;
     }
