@@ -25,19 +25,19 @@ import java.util.UUID;
 @RequestMapping("api/v1/")
 public class MatchedTransactionController {
 
-    String xeroTenantId = "e39e9d62-44ae-4814-adbc-3b897c9b67bd";
+    String xeroTenantId = "11fc848b-ac5c-43eb-8c35-39043cad93e7";
     String refreshToken = "";
     String clientId = "";
     String clientSecret = "";
     // XeroCredentials cred = new XeroCredentials(clientId, clientSecret, refreshToken, xeroTenantId);
-    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDk4MzkwODMsImV4cCI6MTY0OTg0MDg4MywiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiMjhCMkNBMjc5OTczNDNCQUI4OTg0MkQ5NENCRkVGNDIiLCJzdWIiOiIwMDEyMWJiMmIxYTQ1MmJmYjIzODk3MzE5MjYzODU1ZSIsImF1dGhfdGltZSI6MTY0OTgzOTA3MiwieGVyb191c2VyaWQiOiJlYWEzNmM1Yi1jZmI1LTQ1NDQtOGY4Mi0wZWE5ODBiYjY3ZWMiLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjI5OWM2ODc0ZjBmMDQwYTk4ZTU0YThlMDlmYmM4MWU4IiwianRpIjoiZDVlNjA4NjBhYWJkMTJhZDIxNjA4OWE5ODA4NmE3ZGQiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjA0ZmMyNWY4LTViMzctNDYwMS1iNGYyLTIxYTIwMGQ3OGQ5YyIsInNjb3BlIjpbImFjY291bnRpbmcudHJhbnNhY3Rpb25zIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInNzbyJdfQ.lfeUuZxEQ-z4TYUcXGnQGUOa8wDJE2YsS9twOe1tKF9aMnLO-V_bQxSEkajx9VhGjWF44HRr8JnRPJcnVaW6Z3tcJA5a4v-amKUXblNlWDVR7nphn0H4GAsc4CHolR6d2hNxRAx9cY6nRMxduY2_oNN01u_IzdUs_FXHQ74fC6LHCKSbZFSQPf1Zldy7-kdf9CYOISsKAnaCe6bgfySJtGl0qfE28Oirki4IUn0wj13bm07QymTZEAzhfDKXF0BkZ5qHqKGQUbP-xpEKcsRKsG1OITG0kCbDh28QlW2YNjllh-aSMbdq68IJiMF3ZIFtaTROiXnkztpe2qpuMg9QNw";
+    String accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFDQUY4RTY2NzcyRDZEQzAyOEQ2NzI2RkQwMjYxNTgxNTcwRUZDMTkiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJISy1PWm5jdGJjQW8xbkp2MENZVmdWY09fQmsifQ.eyJuYmYiOjE2NDk5MjY0MDYsImV4cCI6MTY0OTkyODIwNiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS54ZXJvLmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHkueGVyby5jb20vcmVzb3VyY2VzIiwiY2xpZW50X2lkIjoiNThBQTQzMEZFOTc5NENGMDgyQzdEMzYzMjg1MEJENDYiLCJzdWIiOiI5MjVmYmEyZGNjZjI1MWEzOTEyMWUyZTg4M2I5OTk2NCIsImF1dGhfdGltZSI6MTY0OTkyNjM5NiwieGVyb191c2VyaWQiOiI4ZTZhZDI1NS1jMDlkLTQzYmEtODY1NS0wYTcyYjY2MDRhOTciLCJnbG9iYWxfc2Vzc2lvbl9pZCI6IjJjMGU4YTYwZjg0ZjQxMzk4NWMxY2VlMDcxOTU2MTg5IiwianRpIjoiZmI0OTY4YzM0MDY0ZjI0NDczZTIxMzVjYzJmNTllNDIiLCJhdXRoZW50aWNhdGlvbl9ldmVudF9pZCI6IjZhNDE2ZjQwLTE4NTQtNGNjMS1iYmMzLTNmZmI1ZDg4ZjRkNiIsInNjb3BlIjpbImVtYWlsIiwicHJvZmlsZSIsIm9wZW5pZCIsImFjY291bnRpbmcuc2V0dGluZ3MiLCJhY2NvdW50aW5nLnRyYW5zYWN0aW9ucyIsImFjY291bnRpbmcuY29udGFjdHMiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsic3NvIl19.iL5FNkGOYToy6NJhyeq-NfQgOS7QJFt5J53Hh_uI5rqtMcDUlsuxpe8ItUcY9Eku2RLQWQA70oOnrAH7t90DWlTcl_k8Mz8PkPsbpSaISA9Y8jM9SaMO2tUSjje6zrvdu-YYYBK6hS33FlMetTn1McaUwBDB0UOAR_kkjCVq5Fb_ByP0moDx-RZ-VwNmX15ht_8AOEjxHycCRA4aLlIBzKu9kJsBq69_3ZL8MVCAZyWuRTebKjQVsPWbmttTvHcE6lXwT1cyknlOuK06Neh220Ww5J8e8Jqv3WYisCyxbEdYYQbUYIvtphA9PkTvzVmfpknPaV8wWtwLsaeAD4901A";
     XeroCredentials xeroCredentials = new XeroCredentials(xeroTenantId, accessToken);
 
-    String chargebeeSiteUrl = "reconciletest-test";
-    String chargebeeApiKey = "test_rBsnVbkoMt0ecuqSQlRfH1xYqe3qXBqrJ";
+    String chargebeeSiteUrl = "xaio-yan-test";
+    String chargebeeApiKey = "test_aPW2LccuW8AfjCUxnUl5ZXBlC7dG4UeXG";
     ChargebeeCredentials chargebeeCredentials = new ChargebeeCredentials(chargebeeSiteUrl, chargebeeApiKey);
 
-    String stripeApiKey = "sk_test_51KgIfiSFiiJc1ZKRsk9hPULL1qJ1ZQf22YFf5CmXSQLAgDarsH2vSyfUT9g6Hdaunow7kuAzyy6tA3Lxi7psnoNo00J18f0HDc";
+    String stripeApiKey = "sk_test_51Kgn4aSHg3lW4nFeGQTCtYFmp1ZGTUWIBSyuoTq0rQIxmfBScW1HLcUnnDw8I1Mae5Bo2WmLT89aHNeASzqa4OsL00Ww9J1pKt";
     StripeCredentials stripeCredentials = new StripeCredentials(stripeApiKey);
 
     Map<GatewayEnum, GatewayCredentials> gatewayCredentialsMap = new HashMap<>();
@@ -77,7 +77,7 @@ public class MatchedTransactionController {
         return jobService.getJob(jobId);
     }
 
-    @GetMapping("/job/")
+    @PostMapping("/job/")
     public JSONObject getAllJob(@RequestBody JobFilter jobFilter) throws JSONException, ParseException {
         System.out.println("GET /job/");
         return jobService.getAllJob(jobFilter);
