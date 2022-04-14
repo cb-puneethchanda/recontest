@@ -138,4 +138,14 @@ public class MatchedTransactionController {
 
         return chargebeeTransactions;
     }
+
+    @GetMapping("/site_url")
+    public String getsiteUrl() throws Exception {
+        System.out.println("Get /getsiteUrl");
+        int pos=chargebeeSiteUrl.lastIndexOf("-");
+        if(pos==-1){
+            return "Error";
+        }
+        return chargebeeSiteUrl.substring(0,pos);
+    }
 }
