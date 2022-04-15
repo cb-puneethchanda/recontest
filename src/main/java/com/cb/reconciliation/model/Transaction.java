@@ -14,6 +14,27 @@ public class Transaction {
     protected String issues;
     protected String paymentMethod;
     protected String gateWay;
+    protected double fee;
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(Long fee) {
+        this.fee = fee;
+    }
+
+
+
+    public Transaction(String idAtGateway, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay, double fee) {
+        this.id = idAtGateway;
+        this.date = date;
+        this.amount = amount;
+        this.currencyCode = currencyCode;
+        this.paymentMethod = paymentMethod;
+        this.gateWay = gateWay;
+        this.fee = fee;
+    }
 
     public String getIssues() {
         return issues;
@@ -116,20 +137,21 @@ public class Transaction {
                 ", issues='" + issues + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", gateWay='" + gateWay + '\'' +
+                ", Fee='" + fee + '\'' +
                 '}';
     }
 
     public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", this.getId());
-        jsonObject.put("amount", this.getAmount());
+        jsonObject.put("amount", this.getAmount()/100.0);
         jsonObject.put("currencyCode", this.getCurrencyCode());
         jsonObject.put("date", this.getDate());
         jsonObject.put("transactionType", this.getTransactionType());
         jsonObject.put("issues", this.getIssues());
         jsonObject.put("paymentMethod", this.getPaymentMethod());
         jsonObject.put("gateWay", this.getGateWay());
-
+        jsonObject.put("gatewayFee", this.getFee()/100.0);
         return jsonObject;
     }
 

@@ -29,6 +29,8 @@ public class MismatchedTransactions {
 
             for (int j = 0; j < gatewayTransactions.size(); j++) {
                 if (chargebeeTransaction.equals(gatewayTransactions.get(j))) {
+//                    System.out.println(gatewayTransactions.get(j));
+                    chargebeeTransaction.setFee((long) gatewayTransactions.get(j).getFee());
                     inGateway = true;
                     inAccSoft = false;
 

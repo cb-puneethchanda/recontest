@@ -103,9 +103,10 @@ public class StripeConnect {
             String paymentMethod = balanceTransaction.getSource();
             String gateWay = balanceTransaction.getSource();
             long epochTime = balanceTransaction.getCreated();
+            double fee = balanceTransaction.getFee();
             LocalDateTime date = LocalDateTime.ofEpochSecond(epochTime, 0, ZoneOffset.UTC);
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, paymentMethod, gateWay);
+            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, paymentMethod, gateWay, fee);
             transactions.add(tr);
         }
 //        System.out.println("ST");
