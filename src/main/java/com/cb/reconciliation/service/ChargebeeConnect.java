@@ -6,6 +6,7 @@ import com.cb.reconciliation.model.Transaction;
 import com.chargebee.Environment;
 import com.chargebee.ListResult;
 import com.chargebee.filters.enums.SortOrder;
+import com.chargebee.models.Customer;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -46,6 +47,13 @@ public class ChargebeeConnect {
         List<Transaction> transactions = new ArrayList<>();
         for(ListResult.Entry entry:result) {
             com.chargebee.models.Transaction cb_transaction = entry.transaction();
+            Environment.configure(credentials.getSiteName(), credentials.getAPIKey());
+            ListResult res= com.chargebee.models.Customer.list().id().is(cb_transaction.customerId()).request();
+            String customer_name="";
+            for(ListResult.Entry entry2:res){
+                com.chargebee.models.Customer cb_customer = entry2.customer();
+                customer_name=cb_customer.firstName();
+            }
             String idAtGateway = cb_transaction.idAtGateway();
             double amount = cb_transaction.amount();
             String currencyCode = cb_transaction.currencyCode();
@@ -61,7 +69,7 @@ public class ChargebeeConnect {
                 transactionType = "refund";
             }
 
-            Transaction tr = new Transaction(idAtGateway, date, amount, currencyCode, transactionType, paymentMethod, gateWay);
+            Transaction tr = new Transaction(idAtGateway, customer_name, date, amount, currencyCode, transactionType, paymentMethod, gateWay);
             transactions.add(tr);
         }
 //        System.out.println("CB");

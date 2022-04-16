@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Transaction {
+    protected String customer_name;
     protected String id;
     protected LocalDateTime date;
     protected double amount;
@@ -15,6 +16,7 @@ public class Transaction {
     protected String paymentMethod;
     protected String gateWay;
     protected double fee;
+    protected double actualamount;
 
     public double getFee() {
         return fee;
@@ -24,7 +26,13 @@ public class Transaction {
         this.fee = fee;
     }
 
+    public String getCustomer_name() {
+        return customer_name;
+    }
 
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
 
     public Transaction(String idAtGateway, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay, double fee) {
         this.id = idAtGateway;
@@ -62,8 +70,9 @@ public class Transaction {
     }
 
 
-    public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String transactionType, String paymentMethod, String gateWay) {
+    public Transaction(String id, String customer_name,LocalDateTime date, double amount, String currencyCode, String transactionType, String paymentMethod, String gateWay) {
         this.id = id;
+        this.customer_name=customer_name;
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
@@ -130,6 +139,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id='" + id + '\'' +
+                ", customer_name='" + customer_name + '\'' +
                 ", date=" + date +
                 ", amount=" + amount +
                 ", currencyCode='" + currencyCode + '\'' +
@@ -138,12 +148,14 @@ public class Transaction {
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", gateWay='" + gateWay + '\'' +
                 ", Fee='" + fee + '\'' +
+                ", ActualAmount='" + (amount-fee) + '\'' +
                 '}';
     }
 
     public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", this.getId());
+        jsonObject.put("name",this.getCustomer_name());
         jsonObject.put("amount", this.getAmount()/100.0);
         jsonObject.put("currencyCode", this.getCurrencyCode());
         jsonObject.put("date", this.getDate());
@@ -152,6 +164,7 @@ public class Transaction {
         jsonObject.put("paymentMethod", this.getPaymentMethod());
         jsonObject.put("gateWay", this.getGateWay());
         jsonObject.put("gatewayFee", this.getFee()/100.0);
+        jsonObject.put("actualamount", this.getAmount()/100.0-this.getFee()/100.0);
         return jsonObject;
     }
 
