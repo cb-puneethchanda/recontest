@@ -43,17 +43,17 @@ public class MismatchedTransactions {
                 }
             }
             if (inGateway && inAccSoft) {
-                chargebeeTransaction.setIssues("NONE");
+                chargebeeTransaction.setIssues("no issues");
                 matchingTransactions.add(chargebeeTransaction);
             } else if (inGateway) {
-                chargebeeTransaction.setIssues("NOT_IN_ACCSOFT");
+                chargebeeTransaction.setIssues("missing in Accounting Software");
                 mismatchedTransactions.add(chargebeeTransaction);
             } else if (inAccSoft) {
-                chargebeeTransaction.setIssues("NOT_IN_GATEWAY");
+                chargebeeTransaction.setIssues("missing in Payment Gateway");
                 mismatchedTransactions.add(chargebeeTransaction);
             } else {
                 // todo notinboth
-                chargebeeTransaction.setIssues("NOT_IN_BOTH");
+                chargebeeTransaction.setIssues("missing in both");
                 mismatchedTransactions.add(chargebeeTransaction);
             }
         }
