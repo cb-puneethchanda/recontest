@@ -15,6 +15,7 @@ public class Transaction {
     protected String paymentMethod;
     protected String gateWay;
     protected double fee;
+    protected double actualamount;
 
     public double getFee() {
         return fee;
@@ -138,6 +139,7 @@ public class Transaction {
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", gateWay='" + gateWay + '\'' +
                 ", Fee='" + fee + '\'' +
+                ", ActualAmount='" + (amount-fee) + '\'' +
                 '}';
     }
 
@@ -152,6 +154,7 @@ public class Transaction {
         jsonObject.put("paymentMethod", this.getPaymentMethod());
         jsonObject.put("gateWay", this.getGateWay());
         jsonObject.put("gatewayFee", this.getFee()/100.0);
+        jsonObject.put("actualamount", this.getAmount()/100.0-this.getFee()/100.0);
         return jsonObject;
     }
 
