@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Transaction {
     protected String customer_name;
     protected String id;
-    protected LocalDateTime date;
+    protected String date;
     protected double amount;
     protected String currencyCode;
     protected String transactionType;
@@ -36,7 +36,7 @@ public class Transaction {
 
     public Transaction(String idAtGateway, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay, double fee) {
         this.id = idAtGateway;
-        this.date = date;
+        this.date = date.toString().replace("T"," ");
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.paymentMethod = paymentMethod;
@@ -54,7 +54,7 @@ public class Transaction {
 
     public Transaction(String id, LocalDateTime date, double amount, String currencyCode, String paymentMethod, String gateWay) {
         this.id = id;
-        this.date = date;
+        this.date = date.toString().replace("T"," ");
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.paymentMethod = paymentMethod;
@@ -73,7 +73,7 @@ public class Transaction {
     public Transaction(String id, String customer_name,LocalDateTime date, double amount, String currencyCode, String transactionType, String paymentMethod, String gateWay) {
         this.id = id;
         this.customer_name=customer_name;
-        this.date = date;
+        this.date = date.toString().replace("T"," ");
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.transactionType = transactionType;
@@ -84,7 +84,7 @@ public class Transaction {
     public Transaction(String id) {
         this.id = id;
         this.amount = 100;
-        this.date = LocalDateTime.now();
+        this.date = LocalDateTime.now().toString().replace("T"," ");
     }
 
     public String getCurrencyCode() {
@@ -95,11 +95,11 @@ public class Transaction {
         this.currencyCode = currencyCode;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
