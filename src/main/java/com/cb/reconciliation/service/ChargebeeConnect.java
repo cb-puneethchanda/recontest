@@ -52,7 +52,12 @@ public class ChargebeeConnect {
             String customer_name="";
             for(ListResult.Entry entry2:res){
                 com.chargebee.models.Customer cb_customer = entry2.customer();
-                customer_name=cb_customer.firstName();
+                if(cb_customer.lastName()!=null) {
+                    customer_name=cb_customer.firstName()+" "+cb_customer.lastName();
+                }
+                else{
+                    customer_name=cb_customer.firstName();
+                }
             }
             String idAtGateway = cb_transaction.idAtGateway();
             double amount = cb_transaction.amount();
