@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,14 +59,9 @@ public class JobService {
 
     public JSONObject getAllJob(JobFilter jobFilter) {
         String chargebeeSiteUrl = jobFilter.getSiteUrl();
-        List<String> jobIds = repository.findJobIdByChargebeeSiteUrl(chargebeeSiteUrl);
+        List<String> jobData = repository.findJobIdByChargebeeSiteUrl(chargebeeSiteUrl);
         JSONObject response = new JSONObject();
-        JSONArray jobIdJSON = new JSONArray();
-
-        for (String jobId: jobIds) {
-            jobIdJSON.add(jobId);
-        }
-        response.put("jobIds", jobIdJSON);
+        response.put("arr", jobData);
         return response;
 
     }
