@@ -12,7 +12,7 @@ public interface JobRepository
         extends JpaRepository<Job, String> {
     Optional<Job> findJobByJobId(String jobId);
 
-    @Query("SELECT j.jobId,j.startTime,j.endTime FROM Job j WHERE j.chargebeeSiteUrl = ?1")
+    @Query("SELECT j.jobId,j.startTime,j.endTime,j.createdAt FROM Job j WHERE j.chargebeeSiteUrl = ?1")
     List<String> findJobIdByChargebeeSiteUrl(String siteUrl);
 
 
