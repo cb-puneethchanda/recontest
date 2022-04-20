@@ -37,7 +37,7 @@ public class ChargebeeConnect {
         // Chargebee API
         Environment.configure(credentials.getSiteName(), credentials.getAPIKey());
         ListResult result = com.chargebee.models.Transaction.list()
-//                .limit(10).offset(10)
+                .limit(80)
                 .date().between(startDate, endDate)
                 .gateway().is(gatewayEnumVal)
                 .sortByDate(SortOrder.DESC)
