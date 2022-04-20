@@ -79,9 +79,10 @@ public class MatchedTransactionController {
         return jobService.getJob(jobId);
     }
 
-    @PostMapping("/job/")
-    public JSONObject getAllJob(@RequestBody JobFilter jobFilter) throws JSONException, ParseException {
+    @GetMapping("/job/")
+    public JSONObject getAllJob() throws JSONException, ParseException {
         System.out.println("GET /job/");
+        JobFilter jobFilter=new JobFilter("url1");
         return jobService.getAllJob(jobFilter);
     }
 
